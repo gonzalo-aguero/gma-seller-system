@@ -44,6 +44,7 @@ public class DB {
         try{
             connection = DriverManager.getConnection(url, username, password);
             connected = true;
+            System.out.println("Connected");
         } catch (SQLException e) {
             Alert.alert(null,
                     "No se ha podido conectar a la base de datos."
@@ -58,15 +59,18 @@ public class DB {
     public void disconnect(){
         try {
             connection.close();
+            connected = false;
+            System.out.println("Connection closed");
         } catch (SQLException ex) {
             Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
     /**
+     * Execute the "INSERT" SQL statement to add a new row to the table specified in the parameters.
      * @param table Table name.
-     * @param keys Example: ["name","age"].
-     * @param values Example: ["Mike","31"].
+     * @param keys Keys or columns of the values to insert. Example: {"name","age"}.
+     * @param values Values to insert. Example: {"Mike","31"}.
      */
     public void insert(String table, String[] keys, String[] values){
         if(!connected){
@@ -90,7 +94,6 @@ public class DB {
         }
         
         String sql = "INSERT INTO " + table + " ("+ keysStr +") VALUES ("+ valuesStr +")";
-        System.out.println(sql);
 
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
@@ -112,8 +115,9 @@ public class DB {
     }
     
     /**
+     * Execute the "SELECT" SQL statement to get the data specified in the parameters.
      * @param table Table name
-     * @param valuesToGet Example: ["name", "age"]. You can also use ["*", "numberOfColumns"].
+     * @param valuesToGet Keys or columns to get. Example: ["name", "age"]. You can also use ["*"].
      * @param whereCondition Examples: "1", "id = 25", "name = "Eduardo"
      * @return 
      */
@@ -162,13 +166,14 @@ public class DB {
                 while (result.next()) {
                     rowCount++;
                 }  
-                result.beforeFirst();
+                result.beforeFirst();//restart the result cursor to index -1
                 
                 if(rowCount > 0){
                     var currentRow = 0;
                     resultArr = new String[rowCount][valuesToGetCount];
                     
-                    //Get the name of the table columns.
+                    // Get the name of the table columns if you want to select all the tables.
+                    // ...and assign it to the valuesToGet array :)
                     if("*".equals(valuesToGet[0])){
                         valuesToGet = new String[valuesToGetCount]; //Recreate the variable and set its new size.
                         for (int i = 0; i < valuesToGetCount; i++) {
@@ -176,6 +181,7 @@ public class DB {
                         }
                     }
                     
+                    //Assign the result data to the final array.
                     while(result.next()){
                         for (int i = 0; i < valuesToGetCount; i++) {
                             var value = result.getString(valuesToGet[i]);
@@ -193,6 +199,76 @@ public class DB {
             }
         }
         
+        //return the final array :)
         return resultArr;
+    }
+    
+    /**
+     * Execute the "UPDATE" SQL statement to update the data specified in the parameters.
+     * @param table Table name.
+     * @param keys Keys or columns to update. Example: ["name", "age"]. You can also use ["*"].
+     * @param values Values to update. Example: ["John", "32"].
+     * @param whereCondition Examples: "1", "id = 25", "name = "Eduardo".
+     */
+    public void update(String table, String[] keys, String[] values, String whereCondition ){
+        if(!connected){
+            System.out.println("Database connection not established.");
+            return;
+        }
+        
+        String placesForValues = "";
+        int keysCount = keys.length;
+        for (int i = 0; i < keysCount; i++) {
+            if(i < (keysCount - 1)){
+                //If it is not the last item.
+                placesForValues += keys[i] +" = ?, ";
+            }else{
+                //It is the last item, so it is not necessary to add a ",".
+                placesForValues += keys[i] +" = ?";
+            }
+        }
+        
+        String sql = "UPDATE "+ table +" SET "+placesForValues+" WHERE "+ whereCondition +";";
+
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            
+            for (int i = 0; i < keysCount; i++) {
+                ps.setString((i+1), values[i]);
+            }
+
+            ps.executeUpdate();
+            
+            System.out.println("Successful operation");
+        } catch (SQLException ex) {
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
+        } finally{
+            if(autoDisconnect){
+                disconnect();
+            }
+        }
+    }
+    
+    public void delete(String table, String whereCondition){
+        if(!connected){
+            System.out.println("Database connection not established.");
+            return;
+        }
+        
+        String sql = "DELETE FROM "+ table +" WHERE "+ whereCondition +";";
+
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+
+            ps.execute();
+            
+            System.out.println("Successful operation");
+        } catch (SQLException ex) {
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
+        } finally{
+            if(autoDisconnect){
+                disconnect();
+            }
+        }
     }
 }

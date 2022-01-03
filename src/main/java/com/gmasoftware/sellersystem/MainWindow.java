@@ -5,11 +5,6 @@
 package com.gmasoftware.sellersystem;
 
 import java.awt.Image;
-import java.io.File;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.BoxLayout;
 /**
@@ -18,7 +13,7 @@ import javax.swing.BoxLayout;
  */
 public class MainWindow extends javax.swing.JFrame {
 
-    private ImageIcon salesButtonIcon;
+    private final ImageIcon salesButtonIcon;
     
     /**
      * Creates new form MainWindow

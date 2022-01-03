@@ -13,14 +13,18 @@ import java.util.logging.Logger;
  */
 public class Stock {
     
-    private Product[] products = {};
+    private Product[] products = null;
 
     public Product[] getProducts() {
         return products;
     }
     
+    private void setProducts(Product[] products){
+        this.products = products;
+    }
+    
     public Stock(){
-        this.products = loadStock();
+        setProducts(loadStock());
     }
     
     /**
@@ -34,15 +38,14 @@ public class Stock {
         var result = db.get("products", new String[]{"*"}, "1");
         
         int resultCount = result.length;
-        
+
         if(resultCount < 1){
             return null;
         }
         
+        
+        products = new Product[resultCount]; //Recreate the variable and set its new size.
         for (int i = 0; i < resultCount; i++) {
-
-            products = new Product[resultCount]; //Recreate the variable and set its new size.
-            
             try {
                 products[i] = new Product(
                         Integer.parseInt(result[i][0]), // ID
@@ -61,9 +64,13 @@ public class Stock {
         return products;
     }
     
+    public void reloadStock(){
+        setProducts(loadStock());
+    }
+    
     /***
-     * This function returns the stock as a String array.
-     * @return Stock
+     * This function returns the stock as a String array (It's used for the stock table)
+     * @return Stock as a String Array
      */
     public String[][] getStockAsArray(){
         if(products == null){
@@ -75,17 +82,81 @@ public class Stock {
         String[][] stockArr = new String[productsCount][7];
         
         for (int i = 0; i < productsCount; i++) {
-            String imageStr = (products[i].getImage() == null) ? "" : products[i].getImage().toString();
-            
+            String imageStr = (null == products[i].getImage()) ? "" : products[i].getImage().toString();
+
             stockArr[i][0] = String.valueOf(products[i].getId());
             stockArr[i][1] = products[i].getName();
             stockArr[i][2] = String.valueOf(products[i].getPrice());
             stockArr[i][3] = products[i].getDescription();
-            stockArr[i][4] = String.valueOf(imageStr);
+            stockArr[i][4] = imageStr;
             stockArr[i][5] = String.valueOf(products[i].getStock());
             stockArr[i][6] = String.valueOf(products[i].getSalesCount());
         }
         
         return stockArr;
     }
+    
+    public void createNewProduct(String[] valuesToInsert){
+        var db = new DB();
+        db.connect();
+        
+        String[] keys = {"name","price","description","image","stock","salesCount"};
+        
+        db.insert("products", keys, valuesToInsert);
+    }
+    
+    public boolean saveProducts(String[][] tableData){
+        var db = new DB();
+        db.setAutoDisconnect(false);//IMPORTANT: After updating, I will disconnect "manually".
+        db.connect();
+        
+        String[] keys = {"name","price","description","image","stock","salesCount"};
+        var tableDataCount = tableData.length;
+        
+        //Update the data of each product, one by one.
+        for (int i = 0; i < tableDataCount; i++) {
+            
+            String whereCondition = "id = \""+ tableData[i][0] +"\"";
+            String[] values = {
+                tableData[i][1],
+                tableData[i][2],
+                tableData[i][3],
+                tableData[i][4],
+                tableData[i][5],
+                tableData[i][6]
+            };
+            
+            db.update("products", keys, values, whereCondition);
+        }
+        
+        db.disconnect();//Never forget ;)
+        return true;
+    }
+    
+    public boolean deleteProducts(int[] productIDs){
+        var db = new DB();
+        db.setAutoDisconnect(false);//IMPORTANT: After updating, I will disconnect "manually".
+        db.connect();
+        
+        var productIDsCount = productIDs.length;
+        
+        //Delete the products, one by one.
+        for (int i = 0; i < productIDsCount; i++) {
+            String whereCondition = "id = \""+ productIDs[i] +"\"";
+            
+            db.delete("products", whereCondition);
+            System.out.println("Producto eliminado: "+productIDs[i]);
+        }
+        
+        db.disconnect();//Never forget ;)
+        return true;
+    }
 }
+
+
+
+
+
+
+
+
