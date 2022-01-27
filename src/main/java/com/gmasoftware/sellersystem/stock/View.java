@@ -37,13 +37,13 @@ public class View {
         this.stockClass = new Stock();
     }
     
-    public JScrollPane getComponents(){
-        view = new JScrollPane(content());
+    public JScrollPane getView(){
+        view = new JScrollPane(getContent());
         view.setLocation(0,0);
         return view;
     }
     
-    private JPanel content(){
+    private JPanel getContent(){
         content = new JPanel();
         content.setLocation(0,0);
         content.setLayout(new BoxLayout(content,BoxLayout.Y_AXIS));
@@ -88,7 +88,7 @@ public class View {
                 if(e.isControlDown() && e.getKeyCode() == KeyEvent.VK_N){
                     addButtonHandler();
                 }
-                if(e.isControlDown() && e.getKeyCode() == KeyEvent.VK_D){
+                if(e.isControlDown() && e.getKeyCode() == KeyEvent.VK_DELETE){
                     deleteButtonHandler();
                 }
             }

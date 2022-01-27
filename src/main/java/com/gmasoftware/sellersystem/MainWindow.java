@@ -7,6 +7,7 @@ package com.gmasoftware.sellersystem;
 import java.awt.Image;
 import javax.swing.ImageIcon;
 import javax.swing.BoxLayout;
+import javax.swing.JScrollPane;
 /**
  *
  * @author GMA Software
@@ -116,9 +117,9 @@ public class MainWindow extends javax.swing.JFrame {
                 .addComponent(salesButon)
                 .addGap(18, 18, 18)
                 .addComponent(stockButon)
-                .addGap(29, 29, 29)
+                .addGap(18, 18, 18)
                 .addComponent(usersButon)
-                .addContainerGap(324, Short.MAX_VALUE))
+                .addContainerGap(335, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
@@ -166,11 +167,8 @@ public class MainWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
     private void stockButonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stockButonActionPerformed
         var stockView = new com.gmasoftware.sellersystem.stock.View();
-        var stockViewComponents = stockView.getComponents();
-        contentPanel.setVisible(false);
-        contentPanel.removeAll();
-        contentPanel.add(stockViewComponents);
-        contentPanel.setVisible(true);
+        var view = stockView.getView();
+        setNewView(view);
     }//GEN-LAST:event_stockButonActionPerformed
 
     private void usersButonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_usersButonActionPerformed
@@ -178,9 +176,21 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_usersButonActionPerformed
 
     private void salesButonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_salesButonActionPerformed
-        // TODO add your handling code here:
+        var salesView = new com.gmasoftware.sellersystem.sales.View();
+        var view = salesView.getView();
+        setNewView(view);
     }//GEN-LAST:event_salesButonActionPerformed
-
+    
+    /**
+     * Put a new view in the content panel.
+     * @param view 
+     */
+    private void setNewView(JScrollPane view){
+        contentPanel.setVisible(false);
+        contentPanel.removeAll();
+        contentPanel.add(view);
+        contentPanel.setVisible(true);
+    }
     /**
      * @param args the command line arguments
      */
