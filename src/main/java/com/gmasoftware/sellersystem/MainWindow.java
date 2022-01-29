@@ -4,6 +4,7 @@
  */
 package com.gmasoftware.sellersystem;
 
+import com.gmasoftware.sellersystem.user.User;
 import java.awt.Image;
 import javax.swing.ImageIcon;
 import javax.swing.BoxLayout;
@@ -15,11 +16,14 @@ import javax.swing.JScrollPane;
 public class MainWindow extends javax.swing.JFrame {
 
     private final ImageIcon salesButtonIcon;
-    
+    private final User user;
     /**
      * Creates new form MainWindow
+     * @param user Authenticated user
      */
-    public MainWindow() {
+    public MainWindow(User user) {
+        this.user = user;
+        
         Image icon = new ImageIcon("./img/favicon.png").getImage();
         this.setIconImage(icon);
         
@@ -176,7 +180,7 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_usersButonActionPerformed
 
     private void salesButonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_salesButonActionPerformed
-        var salesView = new com.gmasoftware.sellersystem.sales.View();
+        var salesView = new com.gmasoftware.sellersystem.sales.View(user);
         var view = salesView.getView();
         setNewView(view);
     }//GEN-LAST:event_salesButonActionPerformed
@@ -224,7 +228,7 @@ public class MainWindow extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new MainWindow().setVisible(true);
+                new MainWindow(null).setVisible(true);
             }
         });
     }

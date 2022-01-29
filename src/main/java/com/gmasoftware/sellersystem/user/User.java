@@ -50,6 +50,9 @@ public class User {
             
             if(typedPassword.equals(result[0][1])){
                 authenticated = true;
+                String userIDStr = result[0][0];
+                this.userID = Integer.parseInt(userIDStr);
+                this.username = typedUsername;
             }else{
                 throw new Error("no-password");
             }

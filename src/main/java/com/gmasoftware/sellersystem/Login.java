@@ -148,11 +148,12 @@ public class Login extends javax.swing.JFrame {
         String typedPassword = passwordInput.getText();
         
         User user = new User();
+        
         try{
             user.authenticate(typedUsername, typedPassword);
             
             if(user.isAuthenticated()){
-                runHome();
+                runHome(user);
             }
         }catch(Error e){
             switch (e.getMessage()){
@@ -171,10 +172,10 @@ public class Login extends javax.swing.JFrame {
             }
         }
     }
-    private void runHome(){
+    private void runHome(User user){
         this.setVisible(false);//hide login frame
         
-        MainWindow mw = new MainWindow();
+        MainWindow mw = new MainWindow(user);
         mw.setVisible(true);
         mw.setSize(900, 500);
         mw.setLocationRelativeTo(null);

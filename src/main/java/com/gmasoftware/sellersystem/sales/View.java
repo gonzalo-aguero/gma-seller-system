@@ -6,6 +6,7 @@ package com.gmasoftware.sellersystem.sales;
 
 import com.gmasoftware.sellersystem.messages.Alert;
 import com.gmasoftware.sellersystem.messages.Confirm;
+import com.gmasoftware.sellersystem.user.User;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -22,6 +23,7 @@ import javax.swing.table.DefaultTableModel;
  * @author GMA Software
  */
 public class View {
+    private final User user;
     private JScrollPane view;
     private JPanel content;
     private JLabel title;
@@ -36,8 +38,9 @@ public class View {
     
     private JPanel optionsMenu;
     
-
-    public View(){
+    
+    public View(User user){
+        this.user = user;
         this.salesClass = new Sales();
     }
     
@@ -122,9 +125,9 @@ public class View {
     private JPanel optionsMenu(){
         
         // Buttons
-        var addButton = new JButton("Añadir");
+        var addButton = new JButton("Registrar nueva venta");
         var selectAllButton = new JButton("Seleccionar todo"); 
-        var deleteButton = new JButton("Eliminar");
+        var deleteButton = new JButton("Deshacer venta");
         
         //Events of the buttons.
         addButton.addActionListener((ActionEvent arg0) -> {            
@@ -149,9 +152,8 @@ public class View {
     }
     
     private void addButtonHandler(){
-        //Create a new product in the DB.
-        String[] newProductModel = {"Nuevo producto", "0", "Sin descripción", null, "0", "0"};
-        salesClass.createNewProduct(newProductModel);
+        //Open the form to register a new sale
+        new RegisterNewSaleForm(user).setVisible(true);
 
         //Update table content.
         salesClass.reloadSales();

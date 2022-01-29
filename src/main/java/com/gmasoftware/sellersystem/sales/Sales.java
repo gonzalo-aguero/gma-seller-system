@@ -115,15 +115,6 @@ public class Sales {
         return salesArr;
     }
     
-    public void createNewProduct(String[] valuesToInsert){
-        var db = new DB();
-        db.connect();
-        
-        String[] keys = {"name","price","description","image","stock","salesCount"};
-        
-        db.insert("products", keys, valuesToInsert);
-    }
-    
     public boolean deleteProducts(int[] productIDs){
         var db = new DB();
         db.setAutoDisconnect(false);//IMPORTANT: After updating, I will disconnect "manually".
