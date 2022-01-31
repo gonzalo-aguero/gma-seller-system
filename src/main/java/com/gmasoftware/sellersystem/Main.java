@@ -4,7 +4,7 @@
  */
 package com.gmasoftware.sellersystem;
 
-import com.gmasoftware.sellersystem.sales.RegisterNewSaleForm;
+import com.gmasoftware.sellersystem.sales.RegisterSaleForm;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.UIManager;

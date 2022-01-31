@@ -39,8 +39,8 @@ public class View {
     private JPanel optionsMenu;
     
     
-    public View(User user){
-        this.user = user;
+    public View(){
+        user = User.getInstance();
         this.salesClass = new Sales();
     }
     
@@ -153,7 +153,7 @@ public class View {
     
     private void addButtonHandler(){
         //Open the form to register a new sale
-        new RegisterNewSaleForm(user).setVisible(true);
+        new RegisterSaleForm().setVisible(true);
 
         //Update table content.
         salesClass.reloadSales();

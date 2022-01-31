@@ -10,25 +10,23 @@ import com.gmasoftware.sellersystem.database.DB;
  * @author GMA Software
  */
 public class User {
+    private static User userInstance;
     private int userID;
     private String username;
     private boolean authenticated;
-
-    public int getUserID() {
-        return userID;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public boolean isAuthenticated() {
-        return authenticated;
-    }
     
-    public User(){
+    private User(){
         authenticated = false;
     }
+    
+    public static synchronized User getInstance(){
+        if(userInstance == null){
+            userInstance =  new User();
+        }
+        
+        return userInstance;
+    }
+    
     /**
      * Authenticate the user.
      * @param typedUsername Username
@@ -68,6 +66,7 @@ public class User {
         
         return authenticated;
     }
+    
     private void createUser(String username, String password){
         try{
             DB db = new DB();
@@ -78,5 +77,17 @@ public class User {
         }catch (Error e){
             System.out.println(e);
         }
+    }
+    
+    public int getUserID() {
+        return userID;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public boolean isAuthenticated() {
+        return authenticated;
     }
 }

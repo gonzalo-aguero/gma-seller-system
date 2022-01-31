@@ -147,18 +147,18 @@ public class Login extends javax.swing.JFrame {
         String typedUsername = usernameInput.getText();
         String typedPassword = passwordInput.getText();
         
-        User user = new User();
-        
+        User user = User.getInstance();
+                
         try{
             user.authenticate(typedUsername, typedPassword);
             
             if(user.isAuthenticated()){
-                runHome(user);
+                runHome();
             }
         }catch(Error e){
             switch (e.getMessage()){
                 case "no-user":
-                    Alert.alert(this, "Lo siento, no existe ese usuario.");
+                    Alert.alert(this, "El usuario ingresado no existe.");
                     break;   
                 case "no-password":
                     Alert.alert(this, "La contraseña ingresada es incorrecta.");
@@ -172,10 +172,10 @@ public class Login extends javax.swing.JFrame {
             }
         }
     }
-    private void runHome(User user){
+    private void runHome(){
         this.setVisible(false);//hide login frame
         
-        MainWindow mw = new MainWindow(user);
+        MainWindow mw = new MainWindow();
         mw.setVisible(true);
         mw.setSize(900, 500);
         mw.setLocationRelativeTo(null);
