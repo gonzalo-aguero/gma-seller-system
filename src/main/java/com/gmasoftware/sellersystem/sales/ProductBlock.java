@@ -4,15 +4,24 @@
  */
 package com.gmasoftware.sellersystem.sales;
 
+import com.gmasoftware.sellersystem.messages.Alert;
+import com.gmasoftware.sellersystem.stock.Product;
+import com.gmasoftware.sellersystem.stock.Stock;
+import java.awt.Color;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.stream.IntStream;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 /**
  *
@@ -22,26 +31,97 @@ public class ProductBlock extends JPanel{
     private JLabel comboBoxTitle;
     private JComboBox<String> productComboBox;
     
-    private JLabel  priceTitle;
-    private JLabel price;
+    private JLabel  productPriceTitle;
+    private JLabel productPrice;
     
-    private JLabel unitsTitle;
+    private JLabel productUnitsTitle;
     private JTextField productUnits;
     
-    private JLabel subtotalTitle;
-    private JLabel subtotal;
+    private JLabel productSubtotalTitle;
+    private JLabel productSubtotal;
+    
+    private JButton removeButton;
     
     private GroupLayout productBlockLayout;
     
-    public ProductBlock(){
+    private Product selectedProduct;
+    private float calculatedSubtotal;
+    
+    private final RegisterSaleForm generalForm;
+    
+    public ProductBlock(RegisterSaleForm generalForm){
+        this.generalForm = generalForm;
+        
         productComboBoxFactory();
         productPriceFactory();
         productUnitsFactory();
         productSubtotalFactory();
+        removeButtonFactory();
         
         productBlockLayoutFactory();
         setLayout(productBlockLayout);
     }
+    
+    /**
+     * Create the product block layout and add the components.
+     */
+    private void productBlockLayoutFactory(){
+        productBlockLayout = new GroupLayout(this);
+        
+        productBlockLayout.setHorizontalGroup(
+            productBlockLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addGroup(productBlockLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(productBlockLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                    .addGroup(productBlockLayout.createSequentialGroup()
+                        .addComponent(removeButton, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+                        .addComponent(productComboBox, GroupLayout.PREFERRED_SIZE, 205, GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(productPrice, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(productBlockLayout.createSequentialGroup()
+                        .addComponent(comboBoxTitle, GroupLayout.PREFERRED_SIZE, 203, GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(productPriceTitle, GroupLayout.DEFAULT_SIZE, 118, Short.MAX_VALUE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(productBlockLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                    .addGroup(productBlockLayout.createSequentialGroup()
+                        .addComponent(productUnitsTitle, GroupLayout.PREFERRED_SIZE, 114, GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(productSubtotalTitle, GroupLayout.PREFERRED_SIZE, 92, GroupLayout.PREFERRED_SIZE))
+                    .addGroup(productBlockLayout.createSequentialGroup()
+                        .addComponent(productUnits, GroupLayout.PREFERRED_SIZE, 114, GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(productSubtotal, GroupLayout.PREFERRED_SIZE, 114, GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
+        );
+        productBlockLayout.setVerticalGroup(
+            productBlockLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addGroup(productBlockLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(productBlockLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                    .addComponent(comboBoxTitle)
+                    .addComponent(productUnitsTitle)
+                    .addComponent(productPriceTitle)
+                    .addComponent(productSubtotalTitle))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(productBlockLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                    .addGroup(productBlockLayout.createSequentialGroup()
+                        .addGroup(productBlockLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                            .addComponent(removeButton, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+                            .addComponent(productComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                            .addComponent(productUnits, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                            .addComponent(productPrice, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(productSubtotal, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+    }
+    
+    
+    
+    // ===================================
+    // ============ COMBO BOX ============
+    // ===================================
     
     /**
      * ComboBox for the product selection.
@@ -67,95 +147,16 @@ public class ProductBlock extends JPanel{
      * It is used for the product block.
      */
     private DefaultComboBoxModel productComboboxModel(){
-        var stock = new com.gmasoftware.sellersystem.stock.Stock();
+        var stock = Stock.getInstance();
         var products = stock.getProducts();
         var productsCount = products.length;
         String[] model = new String[productsCount +1];
-        model[0] = "Seleccionar";
+        model[0] = "None";
         for (int i = 0; i < productsCount; i++) {
             var p = products[i];
-            model[i+1] = "("+p.getStock()+") "+ p.getName();
+            model[i+1] = p.getId()+": "+ p.getName() +" ("+p.getStock()+")";
         }
         return new DefaultComboBoxModel<>(model);
-    }
-    
-    private void productPriceFactory(){
-        priceTitle = new JLabel();
-        price = new JLabel();
-        
-        priceTitle.setForeground(new java.awt.Color(64, 64, 64));
-        priceTitle.setText("Price");
-        price.setText("0");
-    }
-    
-    /**
-     * Product units Input.
-     */
-    private void productUnitsFactory(){
-        unitsTitle = new JLabel();
-        unitsTitle.setForeground(new java.awt.Color(64, 64, 64));
-        unitsTitle.setText("Units");
-        productUnits = new JTextField();
-    }
-    
-    private void productSubtotalFactory(){
-        subtotalTitle = new JLabel();
-        subtotalTitle.setText("Subtotal");
-        subtotal = new JLabel();
-        subtotal.setText("0");
-    }
-    
-    /**
-     * Create the product block layout and add the components.
-     */
-    private void productBlockLayoutFactory(){
-        productBlockLayout = new GroupLayout(this);
-        
-        productBlockLayout.setHorizontalGroup(
-            productBlockLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(productBlockLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(productBlockLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                    .addGroup(productBlockLayout.createSequentialGroup()
-                        .addComponent(productComboBox, GroupLayout.PREFERRED_SIZE, 205, GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(price, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(productBlockLayout.createSequentialGroup()
-                        .addComponent(comboBoxTitle, GroupLayout.PREFERRED_SIZE, 203, GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(priceTitle, GroupLayout.DEFAULT_SIZE, 118, Short.MAX_VALUE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(productBlockLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
-                    .addGroup(productBlockLayout.createSequentialGroup()
-                        .addComponent(unitsTitle, GroupLayout.PREFERRED_SIZE, 114, GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(subtotalTitle, GroupLayout.PREFERRED_SIZE, 92, GroupLayout.PREFERRED_SIZE))
-                    .addGroup(productBlockLayout.createSequentialGroup()
-                        .addComponent(productUnits, GroupLayout.PREFERRED_SIZE, 114, GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(subtotal, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        productBlockLayout.setVerticalGroup(
-            productBlockLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(productBlockLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(productBlockLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                    .addComponent(comboBoxTitle)
-                    .addComponent(unitsTitle)
-                    .addComponent(priceTitle)
-                    .addComponent(subtotalTitle))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(productBlockLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                    .addGroup(productBlockLayout.createSequentialGroup()
-                        .addGroup(productBlockLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                            .addComponent(productComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                            .addComponent(productUnits, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                            .addComponent(price, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(subtotal, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
-        );
     }
     
     /**
@@ -165,7 +166,193 @@ public class ProductBlock extends JPanel{
     private void productComboBoxIsChangedHandler(ItemEvent evt){
         if (evt.getSource() == productComboBox) {
             String selectedItem = (String) productComboBox.getSelectedItem();
-            comboBoxTitle.setText(selectedItem);
+            
+            if(!"None".equals(selectedItem)){
+                // A valid product has been selected
+                
+                String[] productIdAndName = selectedItem.split(":");
+                String productId = productIdAndName[0];
+
+                var products = Stock.getInstance().getProducts();
+
+                int elementToFind = Integer.parseInt(productId);
+                int index = IntStream.range(0, products.length).
+                    filter(i -> elementToFind == products[i].getId()).
+                    findFirst().orElse(-1);
+
+                selectedProduct = products[index];
+                
+                float price = selectedProduct.getPrice();
+                this.productPrice.setText(String.valueOf(price));
+                
+                calculateSubtotal();
+                
+                productUnits.requestFocus();
+                productUnits.selectAll();
+            }else{
+                // No product has been selected.
+                
+                this.productPrice.setText("0");
+                this.productSubtotal.setText("0");
+                this.productUnits.setText("");
+            }
         }
+    }
+    
+    public JComboBox<String> getProductComboBox() {
+        return productComboBox;
+    }
+    
+    // =======================================
+    // ============ END COMBO BOX ============
+    // =======================================
+    
+    
+    
+    // ===============================
+    // ============ PRICE ============
+    // ===============================
+    
+    private void productPriceFactory(){
+        productPriceTitle = new JLabel();
+        productPrice = new JLabel();
+        
+        productPriceTitle.setForeground(new java.awt.Color(64, 64, 64));
+        productPriceTitle.setText("Price");
+        productPrice.setText("0");
+    }
+    
+    // ===================================
+    // ============ END PRICE ============
+    // ===================================
+    
+    
+    
+    // ===============================
+    // ============ UNITS ============
+    // ===============================
+
+    /**
+     * Product units Input.
+     */
+    private void productUnitsFactory(){
+        productUnitsTitle = new JLabel();
+        productUnitsTitle.setForeground(new java.awt.Color(64, 64, 64));
+        productUnitsTitle.setText("Units");
+        
+        productUnits = new JTextField();
+        
+        //Event for when the user is typing in the units input.
+        DocumentListener documentListener = new DocumentListener() {
+            @Override
+            public void changedUpdate(DocumentEvent documentEvent) {}
+
+            @Override
+            public void insertUpdate(DocumentEvent documentEvent) {
+                calculateSubtotal();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent documentEvent) {
+                calculateSubtotal();
+            }
+        };
+        
+        productUnits.getDocument().addDocumentListener(documentListener);
+    }
+    
+    public JTextField getProductUnits() {
+        return productUnits;
+    }
+    
+    // ===================================
+    // ============ END UNITS ============
+    // ===================================
+    
+    
+    
+    // ==================================
+    // ============ SUBTOTAL ============
+    // ==================================
+    
+    private void productSubtotalFactory(){
+        productSubtotalTitle = new JLabel();
+        productSubtotalTitle.setText("Subtotal");
+        productSubtotal = new JLabel();
+        productSubtotal.setBackground(Color.yellow);
+        productSubtotal.setText("0");
+    }
+    
+    /**
+     * Calculate the product subtotal, set the value to "calculatedSubtotal" and print it
+     * in subtotal JLabel.
+     */
+    protected void calculateSubtotal(){
+        int units = 0;
+        String unitsStr = productUnits.getText();
+        float price = selectedProduct.getPrice();
+        
+        if("".equals(unitsStr)){
+            //when the input is empty
+            units = 0;
+        }else{
+            if(isNumeric(unitsStr)){
+                units = Integer.parseInt(unitsStr);
+            }else{
+                //when the input has non-numeric characters
+                Alert.alert(productUnits, "El valor a ingresar en el campo \"unidades\" debe ser un número entero."
+                        + "\nVer en el producto \""+ selectedProduct.getName() +"\".");
+                productUnits.requestFocus();
+                units = 0;
+            }
+        }
+        
+        calculatedSubtotal = units * price;
+        productSubtotal.setText(String.valueOf(calculatedSubtotal));
+        
+        generalForm.calculateTotal();
+    }
+    
+    public float getCalculatedSubtotal() {
+        return calculatedSubtotal;
+    }
+    
+    // ======================================
+    // ============ END SUBTOTAL ============
+    // ======================================
+    
+    
+    
+    // =======================================
+    // ============ REMOVE BUTTON ============
+    // =======================================
+    
+    private void removeButtonFactory(){
+        Icon icon = new ImageIcon("./img/remove.png");
+        removeButton = new JButton(icon);
+    }
+    
+    protected JButton getRemoveButton() {
+        return removeButton;
+    }
+    
+    // ===========================================
+    // ============ END REMOVE BUTTON ============
+    // ===========================================
+    
+    
+    
+    /**
+     * Return True if the String is a numeric value.
+     * @param value
+     * @return Return True if the String is a numeric value.
+     */
+    public static boolean isNumeric(String value){
+	try {
+            Float.parseFloat(value);
+            return true;
+	} catch (NumberFormatException nfe){
+            return false;
+	}
     }
 }

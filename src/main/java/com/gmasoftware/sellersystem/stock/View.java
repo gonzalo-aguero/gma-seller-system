@@ -29,12 +29,12 @@ public class View {
     private final String[] tableHeader = {"ID", "Nombre", "Valor", "Descripción", "Imagen", "Stock", "Ventas"};
     private DefaultTableModel tableModel;
     private boolean allSelected = false;
-    private final Stock stockClass;
+    private final Stock stockInstance;
     private JScrollPane tableContainer;
     private JPanel optionsMenu;
     
     public View(){
-        this.stockClass = new Stock();
+        this.stockInstance = Stock.getInstance();
     }
     
     public JScrollPane getView(){
@@ -62,7 +62,7 @@ public class View {
     }
     
     private void tableModelFactory(){
-        tableModel = new DefaultTableModel(stockClass.getStockAsArray(), tableHeader){
+        tableModel = new DefaultTableModel(stockInstance.getStockAsArray(), tableHeader){
             @Override
             public boolean isCellEditable(int row, int column){
                 return column != 0;
@@ -137,11 +137,11 @@ public class View {
     private void addButtonHandler(){
         //Create a new product in the DB.
         String[] newProductModel = {"Nuevo producto", "0", "Sin descripción", null, "0", "0"};
-        stockClass.createNewProduct(newProductModel);
+        stockInstance.createNewProduct(newProductModel);
 
         //Update table content.
-        stockClass.reloadStock();
-        tableModel.setDataVector(stockClass.getStockAsArray(), tableHeader);
+        stockInstance.reloadStock();
+        tableModel.setDataVector(stockInstance.getStockAsArray(), tableHeader);
 
         //Set focus on the new row
         var rowIndex = stockTable.getRowCount() -1;
@@ -212,11 +212,11 @@ public class View {
         }
 
         //Save data, reload product stock, and repaint.
-        if(stockClass.saveProducts(tableData)){
+        if(stockInstance.saveProducts(tableData)){
             Alert.alert(view, "Productos guardados correctamente.");
         }
-        stockClass.reloadStock();
-        tableModel.setDataVector(stockClass.getStockAsArray(), tableHeader);
+        stockInstance.reloadStock();
+        tableModel.setDataVector(stockInstance.getStockAsArray(), tableHeader);
     }
     
     private void deleteButtonHandler(){
@@ -246,10 +246,10 @@ public class View {
         var answer = Confirm.deleteConfirm(title, confirmMsg);
 
         if(answer == 1){
-            stockClass.deleteProducts(productIDs);
+            stockInstance.deleteProducts(productIDs);
         }
         
-        stockClass.reloadStock();
-        tableModel.setDataVector(stockClass.getStockAsArray(), tableHeader);
+        stockInstance.reloadStock();
+        tableModel.setDataVector(stockInstance.getStockAsArray(), tableHeader);
     }
 }   

@@ -12,6 +12,16 @@ import java.util.logging.Logger;
  * @author GMA Software
  */
 public class Stock {
+    // Single global instance
+    private static Stock stockInstance;
+    public static synchronized Stock getInstance(){
+        if(stockInstance == null){
+            stockInstance =  new Stock();
+        }
+        
+        return stockInstance;
+    }
+    
     
     private Product[] products = null;
 
@@ -23,7 +33,7 @@ public class Stock {
         this.products = products;
     }
     
-    public Stock(){
+    private Stock(){
         setProducts(loadStock());
     }
     

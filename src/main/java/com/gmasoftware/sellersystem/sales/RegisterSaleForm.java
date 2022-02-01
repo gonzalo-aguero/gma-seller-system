@@ -7,6 +7,9 @@ package com.gmasoftware.sellersystem.sales;
 import com.gmasoftware.sellersystem.database.DB;
 import com.gmasoftware.sellersystem.user.User;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import javax.swing.BoxLayout;
@@ -18,7 +21,7 @@ import javax.swing.JButton;
  */
 public class RegisterSaleForm extends javax.swing.JFrame{
     private final User user;
-    private ProductBlock[] productBlocksClass;
+    private ProductBlock[] productBlocks = {};
 
     /**
      * Creates new form RegisterNewSale
@@ -32,7 +35,7 @@ public class RegisterSaleForm extends javax.swing.JFrame{
         productListContainerFactory();
         addAProductBlock();
         
-        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+//        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
     
     /**
@@ -50,9 +53,10 @@ public class RegisterSaleForm extends javax.swing.JFrame{
         jLabel6 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         submitButton = new javax.swing.JButton();
-        jLabel5 = new javax.swing.JLabel();
+        totalTitle = new javax.swing.JLabel();
         productListContainer = new javax.swing.JScrollPane();
         productBlocksContainer = new javax.swing.JPanel();
+        total = new javax.swing.JLabel();
 
         jLabel3.setText("jLabel3");
 
@@ -74,7 +78,7 @@ public class RegisterSaleForm extends javax.swing.JFrame{
             }
         });
 
-        jLabel5.setText("Total");
+        totalTitle.setText("Total");
 
         productBlocksContainer.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
@@ -91,6 +95,8 @@ public class RegisterSaleForm extends javax.swing.JFrame{
 
         productListContainer.setViewportView(productBlocksContainer);
 
+        total.setText("0");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -104,15 +110,16 @@ public class RegisterSaleForm extends javax.swing.JFrame{
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(submitButton, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(134, 134, 134)
-                                .addComponent(jLabel1))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(55, 55, 55)
-                                .addComponent(jLabel5)))
+                        .addGap(134, 134, 134)
+                        .addComponent(jLabel1)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addGap(301, 301, 301)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(totalTitle, javax.swing.GroupLayout.DEFAULT_SIZE, 62, Short.MAX_VALUE)
+                    .addComponent(total, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -121,9 +128,11 @@ public class RegisterSaleForm extends javax.swing.JFrame{
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(productListContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 245, Short.MAX_VALUE)
-                .addComponent(jLabel5)
-                .addGap(19, 19, 19)
+                .addGap(115, 115, 115)
+                .addComponent(totalTitle)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(total)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 119, Short.MAX_VALUE)
                 .addComponent(submitButton, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -158,11 +167,90 @@ public class RegisterSaleForm extends javax.swing.JFrame{
      * of the product, its price, units and subtotal.
      */
     private void addAProductBlock(){
-        var productBlock = new ProductBlock();
-        productBlocksContainer.add(productBlock);
-//        products = {
-//        };
+        var productBlock = new ProductBlock(this);
+        
+        productBlock.getProductUnits().addKeyListener(new KeyListener(){
+            @Override
+            public void keyTyped(KeyEvent e){
+                
+            }
+            @Override
+            public void keyPressed(KeyEvent e){
+                // Enter
+                if(e.getKeyCode() == KeyEvent.VK_ENTER){
+                    productBlock.calculateSubtotal();
+                }
+                // Ctrl + Enter
+                if(e.isControlDown() && e.getKeyCode() == KeyEvent.VK_ENTER){
+                    addAProductBlock();
+                }
+            }
+            @Override
+            public void keyReleased(KeyEvent e){}
+        });
+        
+        productBlocksContainer.add(productBlock);//add the productBlock to the container
+        productBlock.getProductComboBox().requestFocus();//autofocus when the productBlock is created
+        
+        var productBlocksLength = productBlocks.length;
+        //It's the product blocks array with a new place for the new product block.
+        ProductBlock[] newArray = new ProductBlock[productBlocksLength +1];
+        
+        //Copy all the elements from the old array to the new array.
+        for (int i = 0; i < productBlocksLength; i++) {
+            newArray[i] = productBlocks[i];
+        }
+        
+        //Add the new element (the new product block)
+        var productBlockIndex = productBlocksLength;
+        newArray[productBlockIndex] = productBlock;
+        
+        productBlocks = newArray;
+        
+        //Event to remove the product block.
+        productBlock.getRemoveButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ActionListener) {
+                var productBlocksLength = productBlocks.length;
+                
+                //It's the new array of product blocks with one less place.
+                var newArraySize = (productBlocksLength -1) > 0 ? (productBlocksLength -1) : 0;
+                ProductBlock[] newArray = new ProductBlock[newArraySize];
+                
+                int indexCounter = 0;
+                for (int i = 0; i < productBlocksLength; i++) {
+                    // Copy all items ignoring the one you want to delete
+                    if(i != productBlockIndex && newArray.length > 0){
+                        var pb = productBlocks[i];
+                        newArray[indexCounter] = pb;
+                        indexCounter++;
+                    }
+                }
+                
+                productBlocks = newArray;
+                productBlocksContainer.remove(productBlockIndex +1);
+                /**
+                 * *** CORREGIR ***
+                 * El índice del elemento a eliminar se actualiza cada vez que 
+                 * productBlocksContainer actualiza su contenido.
+                 * productBlockIndex, al ser declarado una sola vez durante la creacion del product block,
+                 * su valor permanece intacto incluso luego de agregar o eliminar productBlocks al contenedor.
+                 **/
+                productBlocksContainer.repaint();
+            }
+        });
     }
+    
+    protected void calculateTotal(){
+        float total = 0;
+        var productBlocksLength = productBlocks.length;
+        for (int i = 0; i < productBlocksLength; i++) {
+            var pb = productBlocks[i];
+            var subtotal = pb.getCalculatedSubtotal();
+            total += subtotal;
+        }
+        this.total.setText(String.valueOf(total));
+    };
     
     /***
      * Register a new sale.
@@ -191,7 +279,7 @@ public class RegisterSaleForm extends javax.swing.JFrame{
     private void submitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitButtonActionPerformed
       submitButtonHandler(evt);
     }//GEN-LAST:event_submitButtonActionPerformed
-
+    
     /**
      * @param args the command line arguments
      */
@@ -207,12 +295,13 @@ public class RegisterSaleForm extends javax.swing.JFrame{
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JList<String> jList1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JPanel productBlocksContainer;
     private javax.swing.JScrollPane productListContainer;
     private javax.swing.JButton submitButton;
+    private javax.swing.JLabel total;
+    private javax.swing.JLabel totalTitle;
     // End of variables declaration//GEN-END:variables
 }
