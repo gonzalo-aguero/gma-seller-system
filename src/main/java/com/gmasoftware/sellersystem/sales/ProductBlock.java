@@ -8,6 +8,7 @@ import com.gmasoftware.sellersystem.messages.Alert;
 import com.gmasoftware.sellersystem.stock.Product;
 import com.gmasoftware.sellersystem.stock.Stock;
 import java.awt.Color;
+import java.awt.Image;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.stream.IntStream;
@@ -20,6 +21,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.UIManager;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -45,9 +47,21 @@ public class ProductBlock extends JPanel{
     private GroupLayout productBlockLayout;
     
     private Product selectedProduct;
+    public Product getSelectedProduct() {
+        return selectedProduct;
+    }
+    
     private float calculatedSubtotal;
     
     private final RegisterSaleForm generalForm;
+    private int indexInContainer;
+
+    public int getIndexInContainer() {
+        return indexInContainer;
+    }
+    public void setIndexInContainer(int indexInContainer) {
+        this.indexInContainer = indexInContainer;
+    }
     
     public ProductBlock(RegisterSaleForm generalForm){
         this.generalForm = generalForm;
@@ -74,7 +88,7 @@ public class ProductBlock extends JPanel{
                 .addContainerGap()
                 .addGroup(productBlockLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                     .addGroup(productBlockLayout.createSequentialGroup()
-                        .addComponent(removeButton, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+                        .addComponent(removeButton, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE)
                         .addComponent(productComboBox, GroupLayout.PREFERRED_SIZE, 205, GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(productPrice, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -107,11 +121,11 @@ public class ProductBlock extends JPanel{
                 .addGroup(productBlockLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                     .addGroup(productBlockLayout.createSequentialGroup()
                         .addGroup(productBlockLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                            .addComponent(removeButton, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
-                            .addComponent(productComboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                            .addComponent(productUnits, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                            .addComponent(productPrice, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(productSubtotal, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(removeButton, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE)
+                            .addComponent(productComboBox, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
+                            .addComponent(productUnits, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
+                            .addComponent(productPrice, GroupLayout.DEFAULT_SIZE, 25, Short.MAX_VALUE)
+                            .addComponent(productSubtotal, GroupLayout.DEFAULT_SIZE, 25, Short.MAX_VALUE))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -328,8 +342,13 @@ public class ProductBlock extends JPanel{
     // =======================================
     
     private void removeButtonFactory(){
-        Icon icon = new ImageIcon("./img/remove.png");
-        removeButton = new JButton(icon);
+        ImageIcon imageIcon = new ImageIcon("./img/remove.png"); // load the image to a imageIcon
+        Image image = imageIcon.getImage(); // transform it 
+        Image newImg = image.getScaledInstance(28, 28, Image.SCALE_SMOOTH); // scale it the smooth way  
+        
+        imageIcon = new ImageIcon(newImg);  // transform it back
+
+        removeButton = new JButton(imageIcon);
     }
     
     protected JButton getRemoveButton() {
