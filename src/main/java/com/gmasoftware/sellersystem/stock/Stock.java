@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 /**
- *
+ * ~~~ Singleton ~~~.
  * @author GMA Software
  */
 public class Stock {

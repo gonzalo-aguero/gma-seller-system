@@ -7,7 +7,6 @@ package com.gmasoftware.sellersystem.sales;
 import com.gmasoftware.sellersystem.database.DB;
 import com.gmasoftware.sellersystem.user.User;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.time.LocalDateTime;
@@ -22,11 +21,13 @@ import javax.swing.JButton;
 public class RegisterSaleForm extends javax.swing.JFrame{
     private final User user;
     private ProductBlock[] productBlocks = {};
-
+    private com.gmasoftware.sellersystem.sales.View salesView;
     /**
      * Creates new form RegisterNewSale
+     * @param salesView
      */
-    public RegisterSaleForm() {
+    public RegisterSaleForm(com.gmasoftware.sellersystem.sales.View salesView) {
+        this.salesView = salesView;
         user = User.getInstance();
         
         initComponents();
@@ -244,7 +245,7 @@ public class RegisterSaleForm extends javax.swing.JFrame{
         });
     }
     
-    protected void calculateTotal(){
+    protected float calculateTotal(){
         float total = 0;
         var productBlocksLength = productBlocks.length;
         for (int i = 0; i < productBlocksLength; i++) {
@@ -253,6 +254,7 @@ public class RegisterSaleForm extends javax.swing.JFrame{
             total += subtotal;
         }
         this.total.setText(String.valueOf(total));
+        return total;
     };
     
     /***
@@ -263,29 +265,43 @@ public class RegisterSaleForm extends javax.swing.JFrame{
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         var now = dtf.format(LocalDateTime.now());
         String productIDs = "";
-        String subtotals = "";
+        String units = "";
+        int productsCount = 0;
         
         //Prepare the String with product IDs and the String with product subtotals.
         for (int i = 0; i < productBlocks.length; i++) {
-            productIDs += productBlocks[i].getSelectedProduct().getId() + ",";
-            subtotals += productBlocks[i].getCalculatedSubtotal() + ",";
+            String currentProductUnits = productBlocks[i].getProductUnits().getText();
+            
+            if(i == (productBlocks.length - 1)){
+                //if the current element is the last one.
+                productIDs += productBlocks[i].getSelectedProduct().getId();
+                units += currentProductUnits;
+            }else{
+                productIDs += productBlocks[i].getSelectedProduct().getId() + ",";
+                units += currentProductUnits + ",";
+            }
+            
+            productsCount += Integer.parseInt(currentProductUnits);
         }
-        
-        
         
         var db = new DB();
         db.connect();
         
         String[] keys = {"totalAmount","totalProductCount","date","productList","productUnits","user"};
         String[] valuesToInsert = {
-            "3500",
-            "4",
+            String.valueOf(calculateTotal()),
+            String.valueOf(productsCount),
             String.valueOf(now),
-            "4,5",
-            "3,1",
-            String.valueOf(user.getUsername())
+            productIDs,
+            units,
+            user.getUsername()
         };
         db.insert("sales", keys, valuesToInsert);
+        
+        this.setVisible(false);
+        if(salesView != null){
+            //        this.salesView.
+        }
     }
     
     
@@ -300,7 +316,7 @@ public class RegisterSaleForm extends javax.swing.JFrame{
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new RegisterSaleForm().setVisible(true);
+                new RegisterSaleForm(null).setVisible(true);
             }
         });
     }

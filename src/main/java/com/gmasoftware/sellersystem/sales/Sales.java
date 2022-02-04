@@ -5,6 +5,8 @@
 package com.gmasoftware.sellersystem.sales;
 
 import com.gmasoftware.sellersystem.database.DB;
+import com.gmasoftware.sellersystem.stock.Stock;
+import javax.swing.JTextArea;
 
 /**
  *
@@ -85,7 +87,7 @@ public class Sales {
      * This function returns the sales as a String array (It's used for the table model).
      * @return Sales as a String Array.
      */
-    public String[][] getSalesAsArray(){
+    public Object[][] getSalesAsArray(){
         if(sales == null){
             String[][] withoutSales = {};
             return withoutSales;
@@ -100,8 +102,19 @@ public class Sales {
             var productUnits = sales[i].getProductUnits();
             var productCount = productList.length;
             var products = "";
+            
             for (int j = 0; j < productCount; j++) {
-                products += "\n"+ productList[j] + " ---> " + productUnits[j];
+                var productName = "";
+                var productID = productList[j];
+                var stock = Stock.getInstance().getProducts();
+                
+                for (int k = 0; k < stock.length; k++) {
+                    if(stock[k].getId() == productID){
+                        productName = stock[k].getName();
+                    }
+                }
+                
+                products += "\n"+ productName + ": " + productUnits[j];
             }
 
             salesArr[i][0] = String.valueOf(sales[i].getId());

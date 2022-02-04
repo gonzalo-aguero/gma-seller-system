@@ -16,6 +16,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -84,6 +85,7 @@ public class View {
                 return false;
             }
         };
+        
     }
     
     private JScrollPane salesTable(){
@@ -153,7 +155,7 @@ public class View {
     
     private void addButtonHandler(){
         //Open the form to register a new sale
-        new RegisterSaleForm().setVisible(true);
+        new RegisterSaleForm(this).setVisible(true);
 
         //Update table content.
         salesClass.reloadSales();
