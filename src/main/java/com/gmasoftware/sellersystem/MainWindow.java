@@ -6,6 +6,13 @@ package com.gmasoftware.sellersystem;
 
 import com.gmasoftware.sellersystem.user.User;
 import java.awt.Image;
+import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.BoxLayout;
 import javax.swing.JScrollPane;
@@ -23,7 +30,8 @@ public class MainWindow extends javax.swing.JFrame {
     public MainWindow() {
         user = User.getInstance();
         
-        Image icon = new ImageIcon("./img/favicon.png").getImage();
+        String path = "./img/favicon.png";
+        Image icon = Toolkit.getDefaultToolkit().getImage(path);
         this.setIconImage(icon);
         
         salesButtonIcon = new ImageIcon("./img/sales.png");

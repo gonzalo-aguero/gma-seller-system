@@ -15,10 +15,13 @@ import java.util.logging.Logger;
 
 
 /**
- *
+ *  ~~~ Singleton ~~~.
  * @author GMA Software
  */
 public class DB {
+    /** Single global instance **/
+    private static DB DB_Instance;
+    
     private final String username = "root";
     private final String password = "";
     private final String dbName = "gma_sellersystem";
@@ -27,7 +30,19 @@ public class DB {
     private boolean  connected;
     private boolean autoDisconnect; //Automatically disconnect after request.
     
-    public DB(){
+    // CALCULATE ID METHODS.
+    public final String HIGHEST_VALUE = "HIGHEST_VALUE";
+    public final String FIRST_POSSIBLE_VALUE = "FIRST_POSSIBLE_VALUE";
+    
+    public static synchronized DB getInstance(){
+        if(DB_Instance == null){
+            DB_Instance =  new DB();
+        }
+        
+        return DB_Instance;
+    }
+    
+    private DB(){
         connected = false;
         autoDisconnect = true;
     }
@@ -44,7 +59,7 @@ public class DB {
         try{
             connection = DriverManager.getConnection(url, username, password);
             connected = true;
-            System.out.println("Connected");
+//            System.out.println("Connected");
         } catch (SQLException e) {
             Alert.alert(null,
                     "No se ha podido conectar a la base de datos."
@@ -60,7 +75,10 @@ public class DB {
         try {
             connection.close();
             connected = false;
-            System.out.println("Connection closed");
+            
+            // To prevent a distracted person from forgetting to activate the automatic disconnection again O_o
+            setAutoDisconnect(true);
+//            System.out.println("Connection closed");
         } catch (SQLException ex) {
             Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -269,6 +287,18 @@ public class DB {
             if(autoDisconnect){
                 disconnect();
             }
+        }
+    }
+    
+    public void calculateID(String table, String method){
+        if(HIGHEST_VALUE.equals(method)){
+            // The new ID will be the highest possible value.
+            // For example: 1, 2, 5, 10, 11, (12) <--- This will be the new ID.
+        }else if(FIRST_POSSIBLE_VALUE.equals(method)){
+            // The new ID will be the lowest possible value.
+            // For example: 1, 2, (3), 5, 10, 11, 12 <--- This will be the new ID.
+        }else{
+            
         }
     }
 }

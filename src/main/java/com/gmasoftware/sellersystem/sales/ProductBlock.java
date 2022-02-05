@@ -11,19 +11,20 @@ import java.awt.Color;
 import java.awt.Image;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.stream.IntStream;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.UIManager;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.text.Element;
 
 /**
  *
@@ -38,6 +39,7 @@ public class ProductBlock extends JPanel{
     
     private JLabel productUnitsTitle;
     private JTextField productUnits;
+    private String maximumTextInUnits = null;
     
     private JLabel productSubtotalTitle;
     private JLabel productSubtotal;
@@ -94,13 +96,13 @@ public class ProductBlock extends JPanel{
                         .addComponent(productPrice, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(productBlockLayout.createSequentialGroup()
                         .addComponent(comboBoxTitle, GroupLayout.PREFERRED_SIZE, 203, GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(productPriceTitle, GroupLayout.DEFAULT_SIZE, 118, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(productBlockLayout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
                     .addGroup(productBlockLayout.createSequentialGroup()
                         .addComponent(productUnitsTitle, GroupLayout.PREFERRED_SIZE, 114, GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(productSubtotalTitle, GroupLayout.PREFERRED_SIZE, 92, GroupLayout.PREFERRED_SIZE))
                     .addGroup(productBlockLayout.createSequentialGroup()
                         .addComponent(productUnits, GroupLayout.PREFERRED_SIZE, 114, GroupLayout.PREFERRED_SIZE)
@@ -121,7 +123,9 @@ public class ProductBlock extends JPanel{
                 .addGroup(productBlockLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                     .addGroup(productBlockLayout.createSequentialGroup()
                         .addGroup(productBlockLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                            .addGap(100 ,100, 100)
                             .addComponent(removeButton, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE)
+                            .addGap(100 ,100, 100)
                             .addComponent(productComboBox, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
                             .addComponent(productUnits, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
                             .addComponent(productPrice, GroupLayout.DEFAULT_SIZE, 25, Short.MAX_VALUE)
@@ -183,6 +187,7 @@ public class ProductBlock extends JPanel{
             
             if(!"None".equals(selectedItem)){
                 // A valid product has been selected
+                this.productUnits.setEnabled(true);
                 
                 String[] productIdAndName = selectedItem.split(":");
                 String productId = productIdAndName[0];
@@ -205,7 +210,7 @@ public class ProductBlock extends JPanel{
                 productUnits.selectAll();
             }else{
                 // No product has been selected.
-                
+                this.productUnits.setEnabled(false);
                 this.productPrice.setText("0");
                 this.productSubtotal.setText("0");
                 this.productUnits.setText("");
@@ -255,6 +260,7 @@ public class ProductBlock extends JPanel{
         productUnitsTitle.setText("Units");
         
         productUnits = new JTextField();
+        productUnits.setEnabled(false);
         
         //Event for when the user is typing in the units input.
         DocumentListener documentListener = new DocumentListener() {
@@ -265,7 +271,6 @@ public class ProductBlock extends JPanel{
             public void insertUpdate(DocumentEvent documentEvent) {
                 calculateSubtotal();
             }
-
             @Override
             public void removeUpdate(DocumentEvent documentEvent) {
                 calculateSubtotal();
@@ -273,6 +278,18 @@ public class ProductBlock extends JPanel{
         };
         
         productUnits.getDocument().addDocumentListener(documentListener);
+        productUnits.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent ke) {
+                if (productUnits.getText().length() >= 7 && maximumTextInUnits == null){
+                    ke.consume();
+                }
+            }
+            @Override
+            public void keyPressed(KeyEvent ke) {}
+            @Override
+            public void keyReleased(KeyEvent ke) {}
+        });
     }
     
     public JTextField getProductUnits() {

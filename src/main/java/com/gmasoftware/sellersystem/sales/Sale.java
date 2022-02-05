@@ -4,6 +4,10 @@
  */
 package com.gmasoftware.sellersystem.sales;
 
+import com.gmasoftware.sellersystem.database.DB;
+import com.gmasoftware.sellersystem.stock.Product;
+import com.gmasoftware.sellersystem.stock.Stock;
+
 /**
  * Structure: 
  * id, totalAmount, totalProductCount, date, productList (IDs), productUnits, user.
@@ -63,5 +67,33 @@ public class Sale {
 
     public String getUser() {
         return user;
+    }
+    
+    /**
+     * Undo the sale.
+     * @return 
+     */
+    public boolean undoSale(){
+        // First, return units sold to the stock of each product.
+        // Iterate over the products IDs involved.
+        for (int i = 0; i < this.productList.length; i++) {
+            int involvedProductID = this.productList[i];
+            var stock = Stock.getInstance().getProducts();
+            
+            // Iterate over all products to check ID match and process each product involved.
+            for (Product product : stock){
+                if(product.getId() == involvedProductID){
+                    int soldUnits = this.productUnits[i];
+                    product.recoverProductStock(soldUnits);
+                }
+            }
+        }
+        
+        // Then, delete the sale record.
+        String whereCondition = "id = \""+ this.id +"\"";
+        var db = DB.getInstance();
+        db.connect();
+        db.delete("sales", whereCondition);
+        return true;
     }
 }

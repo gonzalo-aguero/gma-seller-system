@@ -6,7 +6,6 @@ package com.gmasoftware.sellersystem.sales;
 
 import com.gmasoftware.sellersystem.database.DB;
 import com.gmasoftware.sellersystem.stock.Stock;
-import javax.swing.JTextArea;
 
 /**
  *
@@ -33,7 +32,7 @@ public class Sales {
      * @return Array of sales.
      */
     private Sale[] loadSales(){
-        var db = new DB();
+        var db = DB.getInstance();
         db.connect();
         
         var result = db.get("sales", new String[]{"*"}, "1");
@@ -128,22 +127,17 @@ public class Sales {
         return salesArr;
     }
     
-    public boolean deleteProducts(int[] productIDs){
-        var db = new DB();
-        db.setAutoDisconnect(false);//IMPORTANT: After updating, I will disconnect "manually".
-        db.connect();
-        
-        var productIDsCount = productIDs.length;
-        
-        //Delete the sales, one by one.
-        for (int i = 0; i < productIDsCount; i++) {
-            String whereCondition = "id = \""+ productIDs[i] +"\"";
-            
-            db.delete("products", whereCondition);
-            System.out.println("Producto eliminado: "+productIDs[i]);
+    /**
+     * Undo the sales, one by one.
+     * @param saleIDs 
+     */
+    public void undoSales(int[] saleIDs){
+        for (Sale sale : sales) {
+            for (int i = 0; i < saleIDs.length; i++) {
+                if(sale.getId() == saleIDs[i]){
+                    sale.undoSale();
+                }
+            }
         }
-        
-        db.disconnect();//Never forget ;)
-        return true;
     }
 }

@@ -6,6 +6,7 @@ package com.gmasoftware.sellersystem.sales;
 
 import com.gmasoftware.sellersystem.database.DB;
 import com.gmasoftware.sellersystem.user.User;
+import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -13,6 +14,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 /**
  *
@@ -22,6 +25,8 @@ public class RegisterSaleForm extends javax.swing.JFrame{
     private final User user;
     private ProductBlock[] productBlocks = {};
     private com.gmasoftware.sellersystem.sales.View salesView;
+    
+    private JLabel total;
     /**
      * Creates new form RegisterNewSale
      * @param salesView
@@ -36,12 +41,7 @@ public class RegisterSaleForm extends javax.swing.JFrame{
         productListContainerFactory();
         addAProductBlock();
         
-        JButton addProductButton = new JButton();
-        addProductButton.setText("Añadir producto");
-        addProductButton.addActionListener((ActionEvent arg0) -> {            
-            addAProductBlock();
-        });
-        actionBar.add(addProductButton);
+        actionBarFactory();
     }
     
     /**
@@ -59,10 +59,8 @@ public class RegisterSaleForm extends javax.swing.JFrame{
         jLabel6 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         submitButton = new javax.swing.JButton();
-        totalTitle = new javax.swing.JLabel();
         productListContainer = new javax.swing.JScrollPane();
         productBlocksContainer = new javax.swing.JPanel();
-        total = new javax.swing.JLabel();
         actionBar = new javax.swing.JPanel();
 
         jLabel3.setText("jLabel3");
@@ -76,77 +74,71 @@ public class RegisterSaleForm extends javax.swing.JFrame{
 
         jLabel6.setText("jLabel6");
 
-        jLabel1.setText("Register new sale");
+        setTitle("Register New Sale");
+        setMaximumSize(new java.awt.Dimension(615, 2147483647));
+        setMinimumSize(new java.awt.Dimension(615, 0));
 
-        submitButton.setText("Accept");
+        jLabel1.setFont(new java.awt.Font("Ubuntu Light", 1, 22)); // NOI18N
+        jLabel1.setText("REGISTER NEW SALE");
+
+        submitButton.setText("ACCEPT");
         submitButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 submitButtonActionPerformed(evt);
             }
         });
 
-        totalTitle.setText("Total");
+        productListContainer.setMaximumSize(new java.awt.Dimension(615, 350));
+        productListContainer.setMinimumSize(new java.awt.Dimension(615, 350));
+        productListContainer.setPreferredSize(new java.awt.Dimension(615, 350));
 
         productBlocksContainer.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        productBlocksContainer.setMaximumSize(new java.awt.Dimension(605, 999999999));
+        productBlocksContainer.setMinimumSize(new java.awt.Dimension(605, 350));
 
         javax.swing.GroupLayout productBlocksContainerLayout = new javax.swing.GroupLayout(productBlocksContainer);
         productBlocksContainer.setLayout(productBlocksContainerLayout);
         productBlocksContainerLayout.setHorizontalGroup(
             productBlocksContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 628, Short.MAX_VALUE)
+            .addGap(0, 601, Short.MAX_VALUE)
         );
         productBlocksContainerLayout.setVerticalGroup(
             productBlocksContainerLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 297, Short.MAX_VALUE)
+            .addGap(0, 99999995, 99999995)
         );
 
         productListContainer.setViewportView(productBlocksContainer);
 
-        total.setText("0");
-
-        actionBar.setPreferredSize(new java.awt.Dimension(0, 45));
+        actionBar.setMaximumSize(new java.awt.Dimension(611, 50));
+        actionBar.setMinimumSize(new java.awt.Dimension(611, 50));
+        actionBar.setPreferredSize(new java.awt.Dimension(611, 50));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(productListContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+            .addComponent(actionBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(submitButton, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(134, 134, 134)
-                                .addComponent(jLabel1))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(301, 301, 301)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(totalTitle, javax.swing.GroupLayout.DEFAULT_SIZE, 62, Short.MAX_VALUE)
-                                    .addComponent(total, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(productListContainer, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(actionBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addGap(215, 215, 215)
+                        .addComponent(jLabel1)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(productListContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(actionBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(72, 72, 72)
-                .addComponent(totalTitle)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(total)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 111, Short.MAX_VALUE)
+                .addComponent(actionBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(100, 100, 100)
                 .addComponent(submitButton, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -164,7 +156,7 @@ public class RegisterSaleForm extends javax.swing.JFrame{
         productBlocksContainer.setLayout(productBlocksContainerLayout);
         
         productListContainer.setLocation(0,0);
-        productListContainer.setSize(611, 350);
+        productListContainer.setSize(605, 350);
         productListContainer.setViewportView(productBlocksContainer);
     }
 
@@ -245,6 +237,29 @@ public class RegisterSaleForm extends javax.swing.JFrame{
         });
     }
     
+    private void actionBarFactory(){
+        JButton addProductButton = new JButton();
+        addProductButton.setText("Añadir producto");
+        addProductButton.addActionListener((ActionEvent arg0) -> {            
+            addAProductBlock();
+        });
+        
+        JLabel totalTitle = new JLabel();
+        totalTitle.setFont(new java.awt.Font("Ubuntu Light", 1, 20));
+        totalTitle.setText("TOTAL");
+        
+        total = new JLabel();
+        total.setFont(new java.awt.Font("Ubuntu", 1, 28));
+        total.setText("0");
+        
+        JPanel totalContainer = new JPanel();
+        totalContainer.add(totalTitle);
+        totalContainer.add(total);
+        
+        actionBar.add(addProductButton);
+        actionBar.add(totalContainer);
+    }
+    
     protected float calculateTotal(){
         float total = 0;
         var productBlocksLength = productBlocks.length;
@@ -284,7 +299,7 @@ public class RegisterSaleForm extends javax.swing.JFrame{
             productsCount += Integer.parseInt(currentProductUnits);
         }
         
-        var db = new DB();
+        var db = DB.getInstance();
         db.connect();
         
         String[] keys = {"totalAmount","totalProductCount","date","productList","productUnits","user"};
@@ -296,13 +311,25 @@ public class RegisterSaleForm extends javax.swing.JFrame{
             units,
             user.getUsername()
         };
+        //Register the sale in the database.
         db.insert("sales", keys, valuesToInsert);
         
+        // If the sale is registered successfully
+        
+        // Remove the product stock after the sale.
+        for (ProductBlock productBlock : productBlocks) {
+            var product = productBlock.getSelectedProduct();
+            String soldUnits = productBlock.getProductUnits().getText(); 
+            product.removeProductStockAfterSale(Integer.parseInt(soldUnits));
+        }
+        
         this.setVisible(false);
+        
         if(salesView != null){
-            //        this.salesView.
+            salesView.reloadTable();
         }
     }
+    
     
     
     private void submitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitButtonActionPerformed
@@ -331,7 +358,5 @@ public class RegisterSaleForm extends javax.swing.JFrame{
     private javax.swing.JPanel productBlocksContainer;
     private javax.swing.JScrollPane productListContainer;
     private javax.swing.JButton submitButton;
-    private javax.swing.JLabel total;
-    private javax.swing.JLabel totalTitle;
     // End of variables declaration//GEN-END:variables
 }

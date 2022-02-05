@@ -10,6 +10,7 @@ import com.gmasoftware.sellersystem.user.User;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.Arrays;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -104,7 +105,7 @@ public class View {
                     addButtonHandler();
                 }
                 if(e.isControlDown() && e.getKeyCode() == KeyEvent.VK_DELETE){
-                    deleteButtonHandler();
+                    undoButtonHandler();
                 }
             }
             @Override
@@ -113,23 +114,33 @@ public class View {
         
         return tableContainer;
     }
+    
+    protected void reloadTable(){
+        salesClass.reloadSales();
+        tableModel.setDataVector(salesClass.getSalesAsArray(), tableHeader);
+    }
     /**
      * =================================================
      * =================== END TABLE ===================
      * =================================================
      */
     
+    
+    
+    
+    
     /**
      * ===================================================
      * ================== START BUTTONS ==================
      * ===================================================
      */
+    
     private JPanel optionsMenu(){
         
         // Buttons
         var addButton = new JButton("Registrar nueva venta");
         var selectAllButton = new JButton("Seleccionar todo"); 
-        var deleteButton = new JButton("Deshacer venta");
+        var undoButton = new JButton("Deshacer venta");
         
         //Events of the buttons.
         addButton.addActionListener((ActionEvent arg0) -> {            
@@ -140,15 +151,15 @@ public class View {
             selectAllButtonHandler();
         });
         
-        deleteButton.addActionListener((ActionEvent arg0) -> {
-            deleteButtonHandler();
+        undoButton.addActionListener((ActionEvent arg0) -> {
+            undoButtonHandler();
         });
                 
         // Container of the buttons.
         optionsMenu = new JPanel();
         optionsMenu.add(addButton);
         optionsMenu.add(selectAllButton);
-        optionsMenu.add(deleteButton);
+        optionsMenu.add(undoButton);
         
         return optionsMenu;
     }
@@ -158,13 +169,13 @@ public class View {
         new RegisterSaleForm(this).setVisible(true);
 
         //Update table content.
-        salesClass.reloadSales();
-        tableModel.setDataVector(salesClass.getSalesAsArray(), tableHeader);
+        reloadTable();
 
         //Set focus on the new row
         var rowIndex = salesTable.getRowCount() -1;
         salesTable.changeSelection(rowIndex, 1, false, false);
     }
+    
     private void selectAllButtonHandler(){
         if(allSelected){
             salesTable.setRowSelectionInterval(0, 0);
@@ -175,23 +186,23 @@ public class View {
         }
     }
     
-    private void deleteButtonHandler(){
+    private void undoButtonHandler(){
         var rows = salesTable.getSelectedRows();
         int rowsCount = rows.length;
         
         if(rowsCount < 1){
-            Alert.alert(view, "Debe seleccionar uno o más productos.");
+            Alert.alert(view, "Debe seleccionar una o más ventas.");
             return;
         }
         
-        int[] productIDs = new int[rowsCount];
+        int[] salesIDs = new int[rowsCount];
         for (int i = 0; i < rowsCount; i++) {
             int rowIndex = rows[i];
             
             Object idFromTable = salesTable.getValueAt(rowIndex, 0);//get id from table
             String idStr = String.valueOf(idFromTable);//Parse to String
             
-            productIDs[i] = Integer.parseInt(idStr);//Parse to int.
+            salesIDs[i] = Integer.parseInt(idStr);//Parse to int.
         }
         
         String title = "Se eliminarán las ventas seleccionadas.\n"
@@ -202,12 +213,12 @@ public class View {
         var answer = Confirm.deleteConfirm(title, confirmMsg);
 
         if(answer == 1){
-            salesClass.deleteProducts(productIDs);
+            salesClass.undoSales(salesIDs);
         }
         
-        salesClass.reloadSales();
-        tableModel.setDataVector(salesClass.getSalesAsArray(), tableHeader);
+        reloadTable();
     }
+    
     /**
      * =================================================
      * ================== END BUTTONS ==================

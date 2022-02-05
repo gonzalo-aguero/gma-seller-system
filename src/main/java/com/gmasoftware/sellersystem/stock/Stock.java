@@ -12,11 +12,14 @@ import java.util.logging.Logger;
  * @author GMA Software
  */
 public class Stock {
-    // Single global instance
+    /** Single global instance **/
     private static Stock stockInstance;
     public static synchronized Stock getInstance(){
         if(stockInstance == null){
             stockInstance =  new Stock();
+        }else{
+            // Products are retrieved from the database again to ensure up-to-date information.
+            stockInstance.setProducts(stockInstance.loadStock());
         }
         
         return stockInstance;
@@ -42,7 +45,7 @@ public class Stock {
      * @return Array of products.
      */
     private Product[] loadStock(){
-        var db = new DB();
+        var db = DB.getInstance();
         db.connect();
         
         var result = db.get("products", new String[]{"*"}, "1");
@@ -107,7 +110,7 @@ public class Stock {
     }
     
     public void createNewProduct(String[] valuesToInsert){
-        var db = new DB();
+        var db = DB.getInstance();
         db.connect();
         
         String[] keys = {"name","price","description","image","stock","salesCount"};
@@ -116,7 +119,7 @@ public class Stock {
     }
     
     public boolean saveProducts(String[][] tableData){
-        var db = new DB();
+        var db = DB.getInstance();
         db.setAutoDisconnect(false);//IMPORTANT: After updating, I will disconnect "manually".
         db.connect();
         
@@ -144,7 +147,7 @@ public class Stock {
     }
     
     public boolean deleteProducts(int[] productIDs){
-        var db = new DB();
+        var db = DB.getInstance();
         db.setAutoDisconnect(false);//IMPORTANT: After updating, I will disconnect "manually".
         db.connect();
         

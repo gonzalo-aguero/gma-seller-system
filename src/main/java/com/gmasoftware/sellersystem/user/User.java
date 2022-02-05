@@ -35,7 +35,7 @@ public class User {
      */
     public boolean authenticate(String typedUsername, String typedPassword){
         try{
-            DB db = new DB();
+            DB db = DB.getInstance();
             db.connect();
             String[] valuesToGet = {"id", "password"};
             String whereCondition = "username = '"+ typedUsername +"'";
@@ -69,7 +69,7 @@ public class User {
     
     private void createUser(String username, String password){
         try{
-            DB db = new DB();
+            DB db = DB.getInstance();
             db.connect();
             String[] keys = {"username","password"};
             String[] values = {username, password};

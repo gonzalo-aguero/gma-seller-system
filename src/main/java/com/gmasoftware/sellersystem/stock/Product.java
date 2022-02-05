@@ -4,6 +4,7 @@
  */
 package com.gmasoftware.sellersystem.stock;
 
+import com.gmasoftware.sellersystem.database.DB;
 import java.io.IOException;
 import javax.swing.ImageIcon;
 
@@ -102,5 +103,35 @@ public class Product {
 //            this.image = null;
 //        }
         this.image = null;
+    }
+    
+    public void removeProductStockAfterSale(int soldUnits){
+        int newStock = this.stock - soldUnits;
+        int newSalesCount = this.salesCount + soldUnits;
+        
+        var db = DB.getInstance();
+        db.connect();
+        
+        var keys = new String[]{"stock","salesCount"};
+        var values = new String[]{String.valueOf(newStock), String.valueOf(newSalesCount)};
+        var whereCondition = "id = \""+ this.id +"\"";
+        
+        db.update("products", keys, values, whereCondition);
+    }
+    
+    public void recoverProductStock(int soldUnits){
+        var newStock = this.stock + soldUnits;
+        var newSalesCount = this.salesCount - soldUnits;
+                
+        var keys = new String[]{"stock", "salesCount"};
+        var values = new String[]{
+            String.valueOf(newStock),
+            String.valueOf(newSalesCount)
+        };
+        String whereCondition = "id = \""+ this.id +"\"";
+     
+        var db = DB.getInstance();
+        db.connect();
+        db.update("products", keys, values, whereCondition);
     }
 }
