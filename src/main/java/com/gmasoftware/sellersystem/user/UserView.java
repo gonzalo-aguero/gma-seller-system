@@ -2,48 +2,44 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.gmasoftware.sellersystem.sales;
+package com.gmasoftware.sellersystem.user;
 
+import com.gmasoftware.sellersystem.sales.*;
 import com.gmasoftware.sellersystem.messages.Alert;
 import com.gmasoftware.sellersystem.messages.Confirm;
-import com.gmasoftware.sellersystem.user.User;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.Arrays;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
 import javax.swing.table.DefaultTableModel;
 
 /**
- * This is the Sales View class.
+ * This is the User View class.
  * @author GMA Software
  */
-public class View {
-    private final User user;
+public class UserView {
     private JScrollPane view;
     private JPanel content;
     private JLabel title;
     
-    private JTable salesTable;
+    private JTable usersTable;
     private JScrollPane tableContainer;
-    private final String[] tableHeader = {"ID", "Total", "Cant. Total", "Fecha", "Productos", "Usuario"};
+    private final String[] tableHeader = {"ID", "Usuario", "Nivel de permisos"};
     private DefaultTableModel tableModel;
     private boolean allSelected = false;
-
-    private final Sales salesClass;
     
     private JPanel optionsMenu;
     
     
-    public View(){
-        user = User.getInstance();
-        this.salesClass = new Sales();
+    public UserView(){
+        
     }
     
     /**
@@ -60,16 +56,18 @@ public class View {
         content.setLocation(0,0);
         content.setLayout(new BoxLayout(content,BoxLayout.Y_AXIS));
         
-        content.add(title());
+        content.add(titleFactory());
         tableModelFactory();
-        content.add(salesTable());
-        content.add(optionsMenu());
+        content.add(tableFactory());
+        content.add(optionsMenuFactory());
         
         return content;
     }
     
-    private JLabel title(){
-        title = new JLabel("Ventas");
+    private JLabel titleFactory(){
+        title = new JLabel("USUARIOS");
+        title.setFont(new java.awt.Font("Ubuntu Light", 1, 20));
+        title.setAlignmentX(2);
         return title;
     }
     
@@ -79,24 +77,24 @@ public class View {
      * ================== START TABLE ==================
      * =================================================
      */
+    
     private void tableModelFactory(){
-        tableModel = new DefaultTableModel(salesClass.getSalesAsArray(), tableHeader){
+        tableModel = new DefaultTableModel(Users.getUsers(), tableHeader){
             @Override
             public boolean isCellEditable(int row, int column){
                 return false;
             }
         };
-        
     }
     
-    private JScrollPane salesTable(){
-        salesTable = new JTable(tableModel);
+    private JScrollPane tableFactory(){
+        usersTable = new JTable(tableModel);
  
-        tableContainer = new JScrollPane(salesTable);
+        tableContainer = new JScrollPane(usersTable);
         tableContainer.setLocation(0,0);
         
         //Save the table data with Ctrl + S.
-        salesTable.addKeyListener(new KeyListener(){
+        usersTable.addKeyListener(new KeyListener(){
             @Override
             public void keyTyped(KeyEvent e){}
             @Override
@@ -104,27 +102,38 @@ public class View {
                 if(e.isControlDown() && e.getKeyCode() == KeyEvent.VK_N){
                     addButtonHandler();
                 }
-                if(e.isControlDown() && e.getKeyCode() == KeyEvent.VK_DELETE){
-                    undoButtonHandler();
-                }
             }
             @Override
             public void keyReleased(KeyEvent e){}
+        });
+        
+        // For select and edit an user.
+        var userView = this;
+        usersTable.addMouseListener(new MouseAdapter(){
+            public void mouseClicked(MouseEvent evnt){
+                if (evnt.getClickCount() == 2){
+                    String userID = usersTable.getValueAt(usersTable.getSelectedRow(), 0).toString();
+                    
+                    // Open the form to see and edit the user.
+                    var form = new EditUserForm(userView, Integer.parseInt(userID));
+                    form.setVisible(true);
+                    form.setLocationRelativeTo(null);
+                }
+            }
         });
         
         return tableContainer;
     }
     
     protected void reloadTable(){
-        salesClass.reloadSales();
-        tableModel.setDataVector(salesClass.getSalesAsArray(), tableHeader);
+        tableModel.setDataVector(Users.getUsers(), tableHeader);
     }
+    
     /**
      * =================================================
      * =================== END TABLE ===================
      * =================================================
      */
-    
     
     
     
@@ -135,12 +144,11 @@ public class View {
      * ===================================================
      */
     
-    private JPanel optionsMenu(){
+    private JPanel optionsMenuFactory(){
         
         // Buttons
-        var addButton = new JButton("Registrar nueva venta");
-        var selectAllButton = new JButton("Seleccionar todo"); 
-        var undoButton = new JButton("Deshacer venta");
+        var addButton = new JButton("Crear nuevo usuario");
+        var selectAllButton = new JButton("Seleccionar todos"); 
         
         //Events of the buttons.
         addButton.addActionListener((ActionEvent arg0) -> {            
@@ -151,72 +159,33 @@ public class View {
             selectAllButtonHandler();
         });
         
-        undoButton.addActionListener((ActionEvent arg0) -> {
-            undoButtonHandler();
-        });
-                
         // Container of the buttons.
         optionsMenu = new JPanel();
         optionsMenu.add(addButton);
         optionsMenu.add(selectAllButton);
-        optionsMenu.add(undoButton);
         
         return optionsMenu;
     }
     
     private void addButtonHandler(){
-        //Open the form to register a new sale
-        new RegisterSaleForm(this).setVisible(true);
-
-        //Update table content.
-        reloadTable();
+        // Open the form to create a new user.
+        var form = new CreateUserForm(this);
+        form.setVisible(true);
+        form.setLocationRelativeTo(null);
 
         //Set focus on the new row
-        var rowIndex = salesTable.getRowCount() -1;
-        salesTable.changeSelection(rowIndex, 1, false, false);
+        var rowIndex = usersTable.getRowCount() -1;
+        usersTable.changeSelection(rowIndex, 1, false, false);
     }
     
     private void selectAllButtonHandler(){
         if(allSelected){
-            salesTable.setRowSelectionInterval(0, 0);
+            usersTable.setRowSelectionInterval(0, 0);
             allSelected = false;
         }else{
-            salesTable.selectAll();
+            usersTable.selectAll();
             allSelected = true;
         }
-    }
-    
-    private void undoButtonHandler(){
-        var rows = salesTable.getSelectedRows();
-        int rowsCount = rows.length;
-        
-        if(rowsCount < 1){
-            Alert.alert(view, "Debe seleccionar una o más ventas.");
-            return;
-        }
-        
-        int[] salesIDs = new int[rowsCount];
-        for (int i = 0; i < rowsCount; i++) {
-            int rowIndex = rows[i];
-            
-            Object idFromTable = salesTable.getValueAt(rowIndex, 0);//get id from table
-            String idStr = String.valueOf(idFromTable);//Parse to String
-            
-            salesIDs[i] = Integer.parseInt(idStr);//Parse to int.
-        }
-        
-        String title = "Se eliminarán las ventas seleccionadas.\n"
-                + "Esto devolverá las unidades al stock de cada producto.\n\n"
-                + "¿Desea continuar?";
-        String confirmMsg = "Confirmar";
-        
-        var answer = Confirm.deleteConfirm(title, confirmMsg);
-
-        if(answer == 1){
-            salesClass.undoSales(salesIDs);
-        }
-        
-        reloadTable();
     }
     
     /**

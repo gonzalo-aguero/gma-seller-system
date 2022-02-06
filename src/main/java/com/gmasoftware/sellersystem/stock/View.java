@@ -26,7 +26,7 @@ public class View {
     private JPanel content;
     private JLabel viewTitle;
     private JTable stockTable;
-    private final String[] tableHeader = {"ID", "Nombre", "Valor", "Descripción", "Imagen", "Stock", "Ventas"};
+    private final String[] tableHeader = {"ID", "Nombre", "Valor", "Descripción", "Stock", "Ventas"};
     private DefaultTableModel tableModel;
     private boolean allSelected = false;
     private final Stock stockInstance;
@@ -136,7 +136,13 @@ public class View {
     
     private void addButtonHandler(){
         //Create a new product in the DB.
-        String[] newProductModel = {"Nuevo producto", "0", "Sin descripción", null, "0", "0"};
+        String[] newProductModel = {
+            "Nuevo producto",// product name
+            "0", //product price
+            "Sin descripción",//product description
+            "0", //product stock
+            "0" //product sales count
+        };
         stockInstance.createNewProduct(newProductModel);
 
         //Update table content.
@@ -194,21 +200,12 @@ public class View {
                 stockValue = String.valueOf(stockValueInt);
             }
             
-
-            //VALIDATE IMAGE
-            Object image = stockTable.getValueAt(row, 4);
-            String imageStr = 
-                    (String.valueOf(image).equals("")) 
-                    ? null 
-                    : image.toString();
-            
             tableData[row][0] = String.valueOf(stockTable.getValueAt(row, 0));//id
             tableData[row][1] = String.valueOf(stockTable.getValueAt(row, 1));//name
             tableData[row][2] = priceValue;//price
             tableData[row][3] = String.valueOf(stockTable.getValueAt(row, 3));//description 
-            tableData[row][4] = imageStr;//image
-            tableData[row][5] = stockValue;//stock
-            tableData[row][6] = String.valueOf(stockTable.getValueAt(row, 6));//salesCount
+            tableData[row][4] = stockValue;//stock
+            tableData[row][5] = String.valueOf(stockTable.getValueAt(row, 6));//salesCount
         }
 
         //Save data, reload product stock, and repaint.

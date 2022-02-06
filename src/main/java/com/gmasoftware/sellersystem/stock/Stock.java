@@ -65,9 +65,8 @@ public class Stock {
                         result[i][1], // Name
                         Float.parseFloat(result[i][2]), // Price
                         result[i][3], // Description
-                        result[i][4], // Image
-                        Integer.parseInt(result[i][5]), // Stock
-                        Integer.parseInt(result[i][6]) // Sales count
+                        Integer.parseInt(result[i][4]), // Stock
+                        Integer.parseInt(result[i][5]) // Sales count
                 );
             } catch (IOException ex) {
                 Logger.getLogger(Stock.class.getName()).log(Level.SEVERE, null, ex);
@@ -95,15 +94,12 @@ public class Stock {
         String[][] stockArr = new String[productsCount][7];
         
         for (int i = 0; i < productsCount; i++) {
-            String imageStr = (null == products[i].getImage()) ? "" : products[i].getImage().toString();
-
             stockArr[i][0] = String.valueOf(products[i].getId());
             stockArr[i][1] = products[i].getName();
             stockArr[i][2] = String.valueOf(products[i].getPrice());
             stockArr[i][3] = products[i].getDescription();
-            stockArr[i][4] = imageStr;
-            stockArr[i][5] = String.valueOf(products[i].getStock());
-            stockArr[i][6] = String.valueOf(products[i].getSalesCount());
+            stockArr[i][4] = String.valueOf(products[i].getStock());
+            stockArr[i][5] = String.valueOf(products[i].getSalesCount());
         }
         
         return stockArr;
@@ -113,7 +109,7 @@ public class Stock {
         var db = DB.getInstance();
         db.connect();
         
-        String[] keys = {"name","price","description","image","stock","salesCount"};
+        String[] keys = {"name","price","description","stock","salesCount"};
         
         db.insert("products", keys, valuesToInsert);
     }
@@ -123,7 +119,7 @@ public class Stock {
         db.setAutoDisconnect(false);//IMPORTANT: After updating, I will disconnect "manually".
         db.connect();
         
-        String[] keys = {"name","price","description","image","stock","salesCount"};
+        String[] keys = {"name","price","description","stock","salesCount"};
         var tableDataCount = tableData.length;
         
         //Update the data of each product, one by one.
@@ -131,12 +127,11 @@ public class Stock {
             
             String whereCondition = "id = \""+ tableData[i][0] +"\"";
             String[] values = {
-                tableData[i][1],
-                tableData[i][2],
-                tableData[i][3],
-                tableData[i][4],
-                tableData[i][5],
-                tableData[i][6]
+                tableData[i][1],// Product name
+                tableData[i][2],// Product price
+                tableData[i][3],// Product description
+                tableData[i][4],// Product stock
+                tableData[i][5]// Product sales count
             };
             
             db.update("products", keys, values, whereCondition);

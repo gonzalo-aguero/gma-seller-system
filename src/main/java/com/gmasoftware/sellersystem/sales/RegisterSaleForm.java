@@ -24,14 +24,14 @@ import javax.swing.JPanel;
 public class RegisterSaleForm extends javax.swing.JFrame{
     private final User user;
     private ProductBlock[] productBlocks = {};
-    private com.gmasoftware.sellersystem.sales.View salesView;
+    private com.gmasoftware.sellersystem.sales.SalesView salesView;
     
     private JLabel total;
     /**
      * Creates new form RegisterNewSale
      * @param salesView
      */
-    public RegisterSaleForm(com.gmasoftware.sellersystem.sales.View salesView) {
+    public RegisterSaleForm(com.gmasoftware.sellersystem.sales.SalesView salesView) {
         this.salesView = salesView;
         user = User.getInstance();
         

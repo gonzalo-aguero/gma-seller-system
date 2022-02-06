@@ -7,6 +7,8 @@ package com.gmasoftware.sellersystem;
 import com.gmasoftware.sellersystem.messages.Alert;
 import java.awt.event.KeyEvent;
 import com.gmasoftware.sellersystem.user.User;
+import java.awt.Image;
+import javax.swing.ImageIcon;
 
 
 /**
@@ -20,6 +22,10 @@ public class Login extends javax.swing.JFrame {
      */
     public Login() {
         initComponents();
+        
+        String path = "./img/favicon.png";
+        Image icon = new ImageIcon(path).getImage();
+        this.setIconImage(icon);
     }
 
     /**

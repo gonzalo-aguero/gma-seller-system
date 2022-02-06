@@ -18,7 +18,6 @@ public class Product {
     private String name;
     private float price;
     private String description;
-    private ImageIcon image;
     private int stock;
     private int salesCount;
 
@@ -50,14 +49,6 @@ public class Product {
         this.description = description;
     }
 
-    public ImageIcon getImage() {
-        return image;
-    }
-
-    public void setImage(ImageIcon image) {
-        this.image = image;
-    }
-
     public int getStock() {
         return stock;
     }
@@ -79,7 +70,6 @@ public class Product {
             String name,
             float price,
             String description,
-            String imageBlob,
             int stock,
             int salesCount ) throws IOException{
         
@@ -89,20 +79,6 @@ public class Product {
         this.description = description;
         this.stock = stock;
         this.salesCount = salesCount;
-        
-        // Product image
-//        try{
-//            byte bi[] = Byte.parseByte(imageBlob);
-//            BufferedImage image = null;
-//            InputStream in = new ByteArrayInputStream(bi);
-//            image = ImageIO.read(in);
-//            ImageIcon imgIcon = new ImageIcon(image.getScaledInstance(60, 60, 0));
-//            this.image = imgIcon;
-//        }catch(Error e){
-//            System.out.println("ERROR: "+e);
-//            this.image = null;
-//        }
-        this.image = null;
     }
     
     public void removeProductStockAfterSale(int soldUnits){

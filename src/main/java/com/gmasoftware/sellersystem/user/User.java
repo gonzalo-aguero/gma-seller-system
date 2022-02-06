@@ -1,4 +1,4 @@
-/*
+/* 
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
@@ -13,6 +13,7 @@ public class User {
     private static User userInstance;
     private int userID;
     private String username;
+    private int permissionLevel;
     private boolean authenticated;
     
     private User(){
@@ -37,7 +38,7 @@ public class User {
         try{
             DB db = DB.getInstance();
             db.connect();
-            String[] valuesToGet = {"id", "password"};
+            String[] valuesToGet = {"id", "password", "permissionLevel"};
             String whereCondition = "username = '"+ typedUsername +"'";
 
             var result = db.get("users",valuesToGet, whereCondition);
@@ -51,6 +52,7 @@ public class User {
                 String userIDStr = result[0][0];
                 this.userID = Integer.parseInt(userIDStr);
                 this.username = typedUsername;
+                this.permissionLevel = Integer.parseInt(result[0][2]);
             }else{
                 throw new Error("no-password");
             }
@@ -81,6 +83,10 @@ public class User {
     
     public int getUserID() {
         return userID;
+    }
+
+    public int getPermissionLevel() {
+        return permissionLevel;
     }
 
     public String getUsername() {

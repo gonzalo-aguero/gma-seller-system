@@ -290,15 +290,49 @@ public class DB {
         }
     }
     
-    public void calculateID(String table, String method){
+    public String calculateID(String table, String method){
+        connect();
+        autoDisconnect = false;
+        
         if(HIGHEST_VALUE.equals(method)){
             // The new ID will be the highest possible value.
             // For example: 1, 2, 5, 10, 11, (12) <--- This will be the new ID.
+            var result = get(table, new String[]{"id"}, "1");
+            int highestValue = 1;
+            
+            //Get the highest ID
+            for (String[] row : result) {
+                int rowID = Integer.parseInt(row[0]);
+                if(rowID > highestValue){
+                    highestValue = rowID;
+                }
+            }
+            
+            disconnect();
+            return String.valueOf(highestValue +1);
+            
         }else if(FIRST_POSSIBLE_VALUE.equals(method)){
             // The new ID will be the lowest possible value.
             // For example: 1, 2, (3), 5, 10, 11, 12 <--- This will be the new ID.
-        }else{
+            int newId = 1;
+            String[][] result;
             
+            //Get the first available value for the new ID
+            System.out.println("id: "+newId);
+            result = get(table, new String[]{"id"}, "id = \""+ newId +"\"");
+            if(result.length > 0){
+                do{
+                    newId++;
+                    System.out.println("id: "+newId);
+                    result = get(table, new String[]{"id"}, "id = \""+ newId +"\"");
+                }while(result.length > 0);
+            }
+                    
+            disconnect();
+            this.autoDisconnect = true;
+            return String.valueOf(newId);
         }
+        
+        return calculateID(table, HIGHEST_VALUE);
     }
 }
