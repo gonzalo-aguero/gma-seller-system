@@ -47,14 +47,11 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="0" attributes="0">
-                          <Component id="title" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                      </Group>
-                      <Group type="102" alignment="0" attributes="0">
+                      <Component id="title" max="32767" attributes="0"/>
+                      <Group type="102" attributes="0">
                           <Component id="mainMenu" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="contentPanel" max="32767" attributes="0"/>
@@ -73,7 +70,7 @@
                       <Component id="mainMenu" min="-2" max="-2" attributes="0"/>
                       <Component id="contentPanel" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -82,7 +79,7 @@
         <Component class="javax.swing.JLabel" name="title">
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Ubuntu Light" size="28" style="0"/>
+              <Font name="Ubuntu Light" size="32" style="0"/>
             </Property>
             <Property name="text" type="java.lang.String" value="BIENVENIDO"/>
           </Properties>
@@ -90,16 +87,14 @@
         <Container class="javax.swing.JPanel" name="contentPanel">
           <Properties>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-              <Border info="org.netbeans.modules.form.compat2.border.EtchedBorderInfo">
-                <EtchetBorder/>
-              </Border>
+              <Border info="null"/>
             </Property>
           </Properties>
 
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <EmptySpace min="0" pref="347" max="32767" attributes="0"/>
+                  <EmptySpace min="0" pref="351" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
@@ -110,11 +105,6 @@
           </Layout>
         </Container>
         <Container class="javax.swing.JPanel" name="mainMenu">
-          <Properties>
-            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="f1" green="ec" red="e7" type="rgb"/>
-            </Property>
-          </Properties>
 
           <Layout>
             <DimensionLayout dim="0">
@@ -142,7 +132,7 @@
             <Component class="javax.swing.JButton" name="salesButon">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Ubuntu" size="20" style="1"/>
+                  <Font name="Ubuntu" size="24" style="0"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="VENTAS"/>
                 <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
@@ -156,7 +146,7 @@
             <Component class="javax.swing.JButton" name="stockButon">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Ubuntu" size="20" style="1"/>
+                  <Font name="Ubuntu" size="24" style="0"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="PRODUCTOS"/>
                 <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
@@ -170,7 +160,7 @@
             <Component class="javax.swing.JButton" name="usersButon">
               <Properties>
                 <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Ubuntu" size="20" style="1"/>
+                  <Font name="Ubuntu" size="24" style="0"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="USUARIOS"/>
                 <Property name="horizontalTextPosition" type="int" value="0"/>

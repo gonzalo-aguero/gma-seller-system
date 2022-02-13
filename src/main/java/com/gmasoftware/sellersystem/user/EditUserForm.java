@@ -13,6 +13,7 @@ import com.gmasoftware.sellersystem.messages.Alert;
 public class EditUserForm extends javax.swing.JFrame {
     private final UserView userView;
     private Object[] user;
+    private final int userID;
     /**
      * Creates new form EditUserForm
      * @param userView
@@ -21,6 +22,7 @@ public class EditUserForm extends javax.swing.JFrame {
     public EditUserForm(UserView userView, int userID) {
         this.userView = userView;
         initComponents();
+        this.userID = userID;
         loadUserData(userID);
     }
 
@@ -33,7 +35,7 @@ public class EditUserForm extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
+        frameTitle = new javax.swing.JLabel();
         usernameInput = new javax.swing.JTextField();
         usernameTitle = new javax.swing.JLabel();
         passwordTitle = new javax.swing.JLabel();
@@ -43,12 +45,15 @@ public class EditUserForm extends javax.swing.JFrame {
         permissionLevelTitle = new javax.swing.JLabel();
         permissionLevelInput = new javax.swing.JComboBox<>();
         saveButton = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
 
-        setTitle("Create User");
+        setTitle("Edit User");
         setResizable(false);
 
-        jLabel1.setFont(new java.awt.Font("Ubuntu", 0, 22)); // NOI18N
-        jLabel1.setText("EDIT USER");
+        frameTitle.setFont(new java.awt.Font("Ubuntu", 0, 22)); // NOI18N
+        frameTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        frameTitle.setText("EDITAR USUARIO");
 
         usernameInput.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -56,19 +61,19 @@ public class EditUserForm extends javax.swing.JFrame {
             }
         });
 
-        usernameTitle.setFont(new java.awt.Font("Ubuntu Light", 0, 15)); // NOI18N
+        usernameTitle.setFont(new java.awt.Font("Ubuntu", 0, 16)); // NOI18N
         usernameTitle.setText("Nombre de usuario");
 
-        passwordTitle.setFont(new java.awt.Font("Ubuntu Light", 0, 15)); // NOI18N
-        passwordTitle.setText("Contraseña");
+        passwordTitle.setFont(new java.awt.Font("Ubuntu", 0, 16)); // NOI18N
+        passwordTitle.setText("Nueva contraseña");
 
-        passwordTitle1.setFont(new java.awt.Font("Ubuntu Light", 0, 15)); // NOI18N
+        passwordTitle1.setFont(new java.awt.Font("Ubuntu", 0, 16)); // NOI18N
         passwordTitle1.setText("Repetir contraseña");
 
-        permissionLevelTitle.setFont(new java.awt.Font("Ubuntu Light", 0, 15)); // NOI18N
+        permissionLevelTitle.setFont(new java.awt.Font("Ubuntu", 0, 16)); // NOI18N
         permissionLevelTitle.setText("Nivel de permisos");
 
-        permissionLevelInput.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Administrador", "Gestor de Stock", "Gestor de ventas" }));
+        permissionLevelInput.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Administrador", "Gestor de Stock", "Gestor de Ventas" }));
 
         saveButton.setFont(new java.awt.Font("Ubuntu", 0, 15)); // NOI18N
         saveButton.setText("GUARDAR CAMBIOS");
@@ -78,6 +83,14 @@ public class EditUserForm extends javax.swing.JFrame {
             }
         });
 
+        jLabel2.setFont(new java.awt.Font("Ubuntu", 0, 13)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(233, 2, 2));
+        jLabel2.setText("Dejar en blanco para mantener");
+
+        jLabel3.setFont(new java.awt.Font("Ubuntu", 0, 13)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(233, 2, 2));
+        jLabel3.setText("la contraseña anterior.");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -85,6 +98,7 @@ public class EditUserForm extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(100, 100, 100)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(usernameInput)
                     .addComponent(usernameTitle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(passwordTitle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -92,18 +106,17 @@ public class EditUserForm extends javax.swing.JFrame {
                     .addComponent(passwordTitle1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(passwordInput1)
                     .addComponent(permissionLevelTitle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(permissionLevelInput, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(permissionLevelInput, 0, 207, Short.MAX_VALUE)
                     .addComponent(saveButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(32, 32, 32)
-                        .addComponent(jLabel1)))
+                    .addComponent(frameTitle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(100, 100, 100))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
+                .addComponent(frameTitle)
                 .addGap(18, 18, 18)
                 .addComponent(usernameTitle)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -114,7 +127,11 @@ public class EditUserForm extends javax.swing.JFrame {
                 .addComponent(permissionLevelInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(passwordTitle)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(0, 0, 0)
+                .addComponent(jLabel2)
+                .addGap(0, 0, 0)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(passwordInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(passwordTitle1)
@@ -122,7 +139,7 @@ public class EditUserForm extends javax.swing.JFrame {
                 .addComponent(passwordInput1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(saveButton, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(45, Short.MAX_VALUE))
+                .addGap(42, 42, 42))
         );
 
         pack();
@@ -144,36 +161,52 @@ public class EditUserForm extends javax.swing.JFrame {
         
         usernameInput.setText((String) username);
         
+        //if it's the root user.
+        if(permissionLevel == 0){
+            permissionLevelInput.setEnabled(false);
+            permissionLevelInput.addItem("Root");
+            permissionLevelInput.setSelectedIndex(3);
+            return;
+        }
+
         permissionLevelInput.setSelectedIndex(permissionLevel -1);
     }
+    
     private void saveButtonHandler(){
         String username = usernameInput.getText();
         int permissionLevel = permissionLevelInput.getSelectedIndex() + 1;
+                
         char[] password = passwordInput.getPassword();
         char[] repeatedPassword = passwordInput1.getPassword();
-        
-        String passwordStr = "";
-        String repeatedPasswordStr = "";
-        for (char c : password) {
-            passwordStr += c;
-        }
-        for (char c : repeatedPassword) {
-            repeatedPasswordStr += c;
-        }
-        
-        if(!repeatedPasswordStr.equals(passwordStr)){
-            Alert.alert(rootPane, "Las contraseñas ingresadas no coinciden.");
-            return;
-        }
-        
-        Users.createUser(username, passwordStr, String.valueOf(permissionLevel));
-        
-        // getPassword() recommendation.
-        passwordStr = null;
-        repeatedPasswordStr = null;
-        for (int i = 0; i < password.length; i++) {
-            password[i] = 0;
-            repeatedPassword[i] = 0;
+
+        if(password.length > 0 || repeatedPassword.length > 0){
+            String passwordStr = "";
+            String repeatedPasswordStr = "";
+            for (char c : password) {
+                passwordStr += c;
+            }
+            for (char c : repeatedPassword) {
+                repeatedPasswordStr += c;
+            }
+
+            if(!repeatedPasswordStr.equals(passwordStr)){
+                Alert.alert(rootPane, "Las contraseñas ingresadas no coinciden.");
+                return;
+            }
+
+            //Update the user data. In this case it will update the user's password too.
+            Users.updateUser(this.userID, username, passwordStr, String.valueOf(permissionLevel));
+            
+            // I do it for a recommendation in getPassword() documentation.
+            passwordStr = null;
+            repeatedPasswordStr = null;
+            for (int i = 0; i < password.length; i++) {
+                password[i] = 0;
+                repeatedPassword[i] = 0;
+            }
+        }else{
+            //Update the user data. In this case it will not update the user's password.
+            Users.updateUser(this.userID, username, null, String.valueOf(permissionLevel));
         }
         
         this.setVisible(false);
@@ -216,7 +249,9 @@ public class EditUserForm extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel frameTitle;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JPasswordField passwordInput;
     private javax.swing.JPasswordField passwordInput1;
     private javax.swing.JLabel passwordTitle;
