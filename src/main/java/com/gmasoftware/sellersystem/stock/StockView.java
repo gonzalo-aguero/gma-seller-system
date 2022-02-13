@@ -20,11 +20,11 @@ import javax.swing.JButton;
  *
  * @author GMA Software
  */
-public class View {
+public class StockView {
     
     private JScrollPane view;
     private JPanel content;
-    private JLabel viewTitle;
+    private JLabel title;
     private JTable stockTable;
     private final String[] tableHeader = {"ID", "Nombre", "Valor", "Descripción", "Stock", "Ventas"};
     private DefaultTableModel tableModel;
@@ -33,7 +33,7 @@ public class View {
     private JScrollPane tableContainer;
     private JPanel optionsMenu;
     
-    public View(){
+    public StockView(){
         this.stockInstance = Stock.getInstance();
     }
     
@@ -57,8 +57,10 @@ public class View {
     }
     
     private JLabel viewTitle(){
-        viewTitle = new JLabel("Productos");
-        return viewTitle;
+        title = new JLabel("PRODUCTOS");
+        title.setFont(new java.awt.Font("Ubuntu Light", 1, 20));
+        title.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        return title;
     }
     
     private void tableModelFactory(){
@@ -102,10 +104,22 @@ public class View {
     private JPanel optionsMenu(){
         
         // Buttons
-        var addButton = new JButton("Añadir");
+        var addButton = new JButton("Crear producto");
         var selectAllButton = new JButton("Seleccionar todo"); 
         var deleteButton = new JButton("Eliminar");
         var saveButton = new JButton("Guardar");
+        
+        Theme.Styles.applyGoodButtonColos(addButton);
+        Theme.Styles.applyNormalButtonFont(addButton);
+        
+        Theme.Styles.applyNeutralButtonColors(selectAllButton);
+        Theme.Styles.applyNormalButtonFont(selectAllButton);
+        
+        Theme.Styles.applyBadButtonColors(deleteButton);
+        Theme.Styles.applyNormalButtonFont(deleteButton);
+        
+        Theme.Styles.applySafeButtonColors(saveButton);
+        Theme.Styles.applyNormalButtonFont(saveButton);
         
         //Events of the buttons.
         addButton.addActionListener((ActionEvent arg0) -> {            
@@ -130,6 +144,7 @@ public class View {
         optionsMenu.add(selectAllButton);
         optionsMenu.add(deleteButton);
         optionsMenu.add(saveButton);
+        Theme.Styles.applyOptionsBar(optionsMenu);
         
         return optionsMenu;
     }
@@ -153,6 +168,7 @@ public class View {
         var rowIndex = stockTable.getRowCount() -1;
         stockTable.changeSelection(rowIndex, 1, false, false);
     }
+    
     private void selectAllButtonHandler(){
         if(allSelected){
             stockTable.setRowSelectionInterval(0, 0);
@@ -162,6 +178,7 @@ public class View {
             allSelected = true;
         }
     }
+    
     private void saveButtonHandler(){
         var numOfRows = stockTable.getRowCount();
         String[][] tableData = new String[numOfRows][7];

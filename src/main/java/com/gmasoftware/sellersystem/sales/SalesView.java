@@ -7,6 +7,7 @@ package com.gmasoftware.sellersystem.sales;
 import com.gmasoftware.sellersystem.messages.Alert;
 import com.gmasoftware.sellersystem.messages.Confirm;
 import com.gmasoftware.sellersystem.user.User;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -67,7 +68,9 @@ public class SalesView {
     }
     
     private JLabel title(){
-        title = new JLabel("Ventas");
+        title = new JLabel("VENTAS");
+        title.setFont(new java.awt.Font("Ubuntu Light", 1, 20));
+        title.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         return title;
     }
     
@@ -134,11 +137,18 @@ public class SalesView {
      */
     
     private JPanel optionsMenu(){
-        
         // Buttons
-        var addButton = new JButton("Registrar nueva venta");
+        var addButton = new JButton("Crear venta");
+        Theme.Styles.applyGoodButtonColos(addButton);
+        Theme.Styles.applyNormalButtonFont(addButton);
+        
         var selectAllButton = new JButton("Seleccionar todo"); 
+        Theme.Styles.applyNeutralButtonColors(selectAllButton);
+        Theme.Styles.applyNormalButtonFont(selectAllButton);
+        
         var undoButton = new JButton("Deshacer venta");
+        Theme.Styles.applyBadButtonColors(undoButton);
+        Theme.Styles.applyNormalButtonFont(undoButton);
         
         //Events of the buttons.
         addButton.addActionListener((ActionEvent arg0) -> {            
@@ -158,6 +168,7 @@ public class SalesView {
         optionsMenu.add(addButton);
         optionsMenu.add(selectAllButton);
         optionsMenu.add(undoButton);
+        Theme.Styles.applyOptionsBar(optionsMenu);
         
         return optionsMenu;
     }

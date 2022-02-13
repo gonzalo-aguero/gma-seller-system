@@ -4,14 +4,8 @@
  */
 package com.gmasoftware.sellersystem;
 
-import com.gmasoftware.sellersystem.sales.RegisterSaleForm;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-
 /**
- * It's a sales and stock manager.
+ * It's a sales and products stock manager.
  * @author GMA Software
  */
 public class Main {
@@ -20,20 +14,8 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        System.out.println("Hello world");
-//        try {
-//            UIManager.setLookAndFeel(
-//                    "com.sun.java.swing.plaf.gtk.GTKLookAndFeel"
-//            );
-//        }catch (ClassNotFoundException ex) {
-//            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (InstantiationException ex) {
-//            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (IllegalAccessException ex) {
-//            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (UnsupportedLookAndFeelException ex) {
-//            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-//        }
+        System.out.println("===========================       Hello world       ===========================");
+        System.out.println("=========================== Powered by GMA Software ===========================");
 
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {

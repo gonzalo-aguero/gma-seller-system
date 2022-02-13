@@ -4,7 +4,6 @@
  */
 package com.gmasoftware.sellersystem.user;
 
-import com.gmasoftware.sellersystem.sales.*;
 import com.gmasoftware.sellersystem.messages.Alert;
 import com.gmasoftware.sellersystem.messages.Confirm;
 import java.awt.event.ActionEvent;
@@ -67,7 +66,7 @@ public class UserView {
     private JLabel titleFactory(){
         title = new JLabel("USUARIOS");
         title.setFont(new java.awt.Font("Ubuntu Light", 1, 20));
-        title.setAlignmentX(2);
+        title.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         return title;
     }
     
@@ -79,7 +78,7 @@ public class UserView {
      */
     
     private void tableModelFactory(){
-        tableModel = new DefaultTableModel(Users.getUsers(), tableHeader){
+        tableModel = new DefaultTableModel(Users.getUsersForTable(), tableHeader){
             @Override
             public boolean isCellEditable(int row, int column){
                 return false;
@@ -93,14 +92,18 @@ public class UserView {
         tableContainer = new JScrollPane(usersTable);
         tableContainer.setLocation(0,0);
         
-        //Save the table data with Ctrl + S.
         usersTable.addKeyListener(new KeyListener(){
             @Override
             public void keyTyped(KeyEvent e){}
             @Override
             public void keyPressed(KeyEvent e){
+                // Ctrl + N: Create a new user.
                 if(e.isControlDown() && e.getKeyCode() == KeyEvent.VK_N){
                     addButtonHandler();
+                }
+                // Ctrl + Supr/Delete: Delete the selected users.
+                if(e.isControlDown() && e.getKeyCode() == KeyEvent.VK_DELETE){
+                    deleteButtonHandler();
                 }
             }
             @Override
@@ -126,7 +129,7 @@ public class UserView {
     }
     
     protected void reloadTable(){
-        tableModel.setDataVector(Users.getUsers(), tableHeader);
+        tableModel.setDataVector(Users.getUsersForTable(), tableHeader);
     }
     
     /**
@@ -147,8 +150,18 @@ public class UserView {
     private JPanel optionsMenuFactory(){
         
         // Buttons
-        var addButton = new JButton("Crear nuevo usuario");
+        var addButton = new JButton("Crear usuario");
         var selectAllButton = new JButton("Seleccionar todos"); 
+        var deleteButton = new JButton("Eliminar"); 
+        
+        Theme.Styles.applyGoodButtonColos(addButton);
+        Theme.Styles.applyNormalButtonFont(addButton);
+        
+        Theme.Styles.applyNeutralButtonColors(selectAllButton);
+        Theme.Styles.applyNormalButtonFont(selectAllButton);
+        
+        Theme.Styles.applyBadButtonColors(deleteButton);
+        Theme.Styles.applyNormalButtonFont(deleteButton);
         
         //Events of the buttons.
         addButton.addActionListener((ActionEvent arg0) -> {            
@@ -159,10 +172,16 @@ public class UserView {
             selectAllButtonHandler();
         });
         
+        deleteButton.addActionListener((ActionEvent arg0) -> {
+            deleteButtonHandler();
+        });
+        
         // Container of the buttons.
         optionsMenu = new JPanel();
         optionsMenu.add(addButton);
         optionsMenu.add(selectAllButton);
+        optionsMenu.add(deleteButton);
+        Theme.Styles.applyOptionsBar(optionsMenu);
         
         return optionsMenu;
     }
@@ -188,6 +207,38 @@ public class UserView {
         }
     }
     
+    private void deleteButtonHandler(){
+        var rows = usersTable.getSelectedRows();
+        int rowsCount = rows.length;
+        
+        if(rowsCount < 1){
+            Alert.alert(view, "Debe seleccionar uno o más usuarios.");
+            return;
+        }
+        
+        int[] userIDs = new int[rowsCount];
+        for (int i = 0; i < rowsCount; i++) {
+            int rowIndex = rows[i];
+            
+            Object idFromTable = usersTable.getValueAt(rowIndex, 0);//get id from table
+            String idStr = String.valueOf(idFromTable);//Parse to String
+            
+            userIDs[i] = Integer.parseInt(idStr);//Parse to int.
+        }
+        
+        String confirmTitle = "Se eliminarán los usuarios seleccionados.\n"
+                + "¡Una vez hecho, no hay vuelta atrás!\n\n"
+                + "¿Desea continuar?";
+        String confirmMsg = "Confirmar";
+        
+        var answer = Confirm.deleteConfirm(confirmTitle, confirmMsg);
+
+        if(answer == 1){
+            Users.deleteUsers(userIDs);
+        }
+        
+        reloadTable();
+    }
     /**
      * =================================================
      * ================== END BUTTONS ==================

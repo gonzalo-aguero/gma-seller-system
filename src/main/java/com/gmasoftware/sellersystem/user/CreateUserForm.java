@@ -46,7 +46,8 @@ public class CreateUserForm extends javax.swing.JFrame {
         setResizable(false);
 
         jLabel1.setFont(new java.awt.Font("Ubuntu", 0, 22)); // NOI18N
-        jLabel1.setText("CREATE NEW USER");
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("CREAR USUARIO");
 
         usernameInput.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -54,19 +55,19 @@ public class CreateUserForm extends javax.swing.JFrame {
             }
         });
 
-        usernameTitle.setFont(new java.awt.Font("Ubuntu Light", 0, 15)); // NOI18N
+        usernameTitle.setFont(new java.awt.Font("Ubuntu", 0, 16)); // NOI18N
         usernameTitle.setText("Nombre de usuario");
 
-        passwordTitle.setFont(new java.awt.Font("Ubuntu Light", 0, 15)); // NOI18N
+        passwordTitle.setFont(new java.awt.Font("Ubuntu", 0, 16)); // NOI18N
         passwordTitle.setText("Contraseña");
 
-        passwordTitle1.setFont(new java.awt.Font("Ubuntu Light", 0, 15)); // NOI18N
+        passwordTitle1.setFont(new java.awt.Font("Ubuntu", 0, 16)); // NOI18N
         passwordTitle1.setText("Repetir contraseña");
 
-        permissionLevelTitle.setFont(new java.awt.Font("Ubuntu Light", 0, 15)); // NOI18N
+        permissionLevelTitle.setFont(new java.awt.Font("Ubuntu", 0, 16)); // NOI18N
         permissionLevelTitle.setText("Nivel de permisos");
 
-        permissionLevelInput.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Administrador", "Gestor de Stock", "Gestor de ventas" }));
+        permissionLevelInput.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Administrador", "Gestor de Stock", "Gestor de Ventas" }));
 
         createUserButton.setFont(new java.awt.Font("Ubuntu", 0, 15)); // NOI18N
         createUserButton.setText("CREAR USUARIO");
@@ -93,7 +94,7 @@ public class CreateUserForm extends javax.swing.JFrame {
                     .addComponent(permissionLevelInput, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(createUserButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(100, Short.MAX_VALUE))
+                .addGap(100, 100, 100))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -118,7 +119,7 @@ public class CreateUserForm extends javax.swing.JFrame {
                 .addComponent(passwordInput1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(createUserButton, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(45, Short.MAX_VALUE))
+                .addContainerGap(41, Short.MAX_VALUE))
         );
 
         pack();
@@ -154,7 +155,7 @@ public class CreateUserForm extends javax.swing.JFrame {
         
         Users.createUser(username, passwordStr, String.valueOf(permissionLevel));
         
-        // getPassword() recommendation.
+        // I do it for a recommendation in getPassword() documentation.
         passwordStr = null;
         repeatedPasswordStr = null;
         for (int i = 0; i < password.length; i++) {

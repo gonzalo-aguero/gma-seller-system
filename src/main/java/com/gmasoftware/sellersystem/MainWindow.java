@@ -4,7 +4,6 @@
  */
 package com.gmasoftware.sellersystem;
 
-import com.gmasoftware.sellersystem.messages.Alert;
 import com.gmasoftware.sellersystem.user.User;
 import java.awt.Image;
 import javax.swing.ImageIcon;
@@ -16,7 +15,6 @@ import javax.swing.JScrollPane;
  */
 public class MainWindow extends javax.swing.JFrame {
 
-//    private final Image salesButtonIcon;
     /**
      * Creates new form MainWindow
      */
@@ -36,9 +34,28 @@ public class MainWindow extends javax.swing.JFrame {
         this.setExtendedState(6);
         contentPanel.setLayout(new BoxLayout(contentPanel,BoxLayout.Y_AXIS));
         
-        if(User.getInstance().getPermissionLevel() > 1){
-            usersButon.setEnabled(false);
+        title.setText("Hola, " + User.getInstance().getUsername() +"!");
+        
+        var pl = User.getInstance().getPermissionLevel();
+        if(pl > 1){
+            switch (pl) {
+                case 2:
+                    usersButon.setEnabled(false);
+                    break;
+                case 3:
+                    stockButon.setEnabled(false);
+                    usersButon.setEnabled(false);
+                    break;
+                default:
+                    stockButon.setEnabled(false);
+                    salesButon.setEnabled(false);
+                    usersButon.setEnabled(false);
+            }
         }
+        
+        Theme.Styles.applyNormalButtonColors(salesButon);
+        Theme.Styles.applyNormalButtonColors(stockButon);
+        Theme.Styles.applyNormalButtonColors(usersButon);
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -62,25 +79,23 @@ public class MainWindow extends javax.swing.JFrame {
         setBackground(new java.awt.Color(23, 23, 23));
         setResizable(false);
 
-        title.setFont(new java.awt.Font("Ubuntu Light", 0, 28)); // NOI18N
+        title.setFont(new java.awt.Font("Ubuntu Light", 0, 32)); // NOI18N
         title.setText("BIENVENIDO");
 
-        contentPanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        contentPanel.setBorder(null);
 
         javax.swing.GroupLayout contentPanelLayout = new javax.swing.GroupLayout(contentPanel);
         contentPanel.setLayout(contentPanelLayout);
         contentPanelLayout.setHorizontalGroup(
             contentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 347, Short.MAX_VALUE)
+            .addGap(0, 351, Short.MAX_VALUE)
         );
         contentPanelLayout.setVerticalGroup(
             contentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 691, Short.MAX_VALUE)
         );
 
-        mainMenu.setBackground(new java.awt.Color(231, 236, 241));
-
-        salesButon.setFont(new java.awt.Font("Ubuntu", 1, 20)); // NOI18N
+        salesButon.setFont(new java.awt.Font("Ubuntu", 0, 24)); // NOI18N
         salesButon.setText("VENTAS");
         salesButon.setMargin(new java.awt.Insets(20, 0, 20, 0));
         salesButon.addActionListener(new java.awt.event.ActionListener() {
@@ -89,7 +104,7 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
 
-        stockButon.setFont(new java.awt.Font("Ubuntu", 1, 20)); // NOI18N
+        stockButon.setFont(new java.awt.Font("Ubuntu", 0, 24)); // NOI18N
         stockButon.setText("PRODUCTOS");
         stockButon.setMargin(new java.awt.Insets(20, 0, 20, 0));
         stockButon.addActionListener(new java.awt.event.ActionListener() {
@@ -98,7 +113,7 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
 
-        usersButon.setFont(new java.awt.Font("Ubuntu", 1, 20)); // NOI18N
+        usersButon.setFont(new java.awt.Font("Ubuntu", 0, 24)); // NOI18N
         usersButon.setText("USUARIOS");
         usersButon.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         usersButon.setMargin(new java.awt.Insets(20, 0, 20, 0));
@@ -136,9 +151,7 @@ public class MainWindow extends javax.swing.JFrame {
             .addGroup(mainPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(mainPanelLayout.createSequentialGroup()
-                        .addComponent(title)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(title, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(mainPanelLayout.createSequentialGroup()
                         .addComponent(mainMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -153,7 +166,7 @@ public class MainWindow extends javax.swing.JFrame {
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(mainMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(contentPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -173,13 +186,14 @@ public class MainWindow extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
     private void stockButonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stockButonActionPerformed
-        var stockView = new com.gmasoftware.sellersystem.stock.View();
+        var stockView = new com.gmasoftware.sellersystem.stock.StockView();
         var view = stockView.getView();
         this.setNewView(view);
     }//GEN-LAST:event_stockButonActionPerformed
 
     private void usersButonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_usersButonActionPerformed
-        if(User.getInstance().getPermissionLevel() == 1){
+        var pl = User.getInstance().getPermissionLevel();
+        if(pl == 0 || pl == 1){
             var userView = new com.gmasoftware.sellersystem.user.UserView();
             var view = userView.getView();
             this.setNewView(view);
