@@ -5,6 +5,7 @@
 package com.gmasoftware.sellersystem.user;
 
 import com.gmasoftware.sellersystem.database.DB;
+import com.gmasoftware.sellersystem.messages.Alert;
 
 /**
  *
@@ -165,11 +166,7 @@ public class Users {
                 
                 if(Integer.parseInt(id) == userID){
                     var ps = user[2]; //permissionLevel.
-                    if(ps == "0"){
-                        isRootUser = true;
-                    }else{
-                        isRootUser = false;
-                    }
+                    isRootUser = ps.equals("0");
                 }
             }
             
@@ -179,6 +176,7 @@ public class Users {
                 db.connect();
                 db.delete("users", whereCondition);
             }else{
+                Alert.alert(null, "No puedes eliminar el usuario Root.");
                 System.out.println("The root user cannot be removed.");
                 return;
             }

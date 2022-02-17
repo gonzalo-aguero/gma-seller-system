@@ -3,11 +3,19 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package com.gmasoftware.sellersystem.stock;
+import com.gmasoftware.sellersystem.database.DB;
 import com.gmasoftware.sellersystem.messages.Alert;
 import com.gmasoftware.sellersystem.messages.Confirm;
+import com.gmasoftware.sellersystem.sales.ImportProducts;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -29,13 +37,8 @@ public class StockView {
     private final String[] tableHeader = {"ID", "Nombre", "Valor", "Descripción", "Stock", "Ventas"};
     private DefaultTableModel tableModel;
     private boolean allSelected = false;
-    private final Stock stockInstance;
     private JScrollPane tableContainer;
     private JPanel optionsMenu;
-    
-    public StockView(){
-        this.stockInstance = Stock.getInstance();
-    }
     
     public JScrollPane getView(){
         view = new JScrollPane(getContent());
@@ -64,7 +67,8 @@ public class StockView {
     }
     
     private void tableModelFactory(){
-        tableModel = new DefaultTableModel(stockInstance.getStockAsArray(), tableHeader){
+        final String[][] stock = Stock.getInstance().getStockAsArray();
+        tableModel = new DefaultTableModel(stock, tableHeader){
             @Override
             public boolean isCellEditable(int row, int column){
                 return column != 0;
@@ -101,6 +105,16 @@ public class StockView {
         return tableContainer;
     }
     
+    private void reloadTable(){
+        //Update table content.
+        final String[][] stock = Stock.getInstance().getStockAsArray();
+        tableModel.setDataVector(stock, tableHeader);
+
+        //Set focus to last row
+        final var rowIndex = stockTable.getRowCount() -1;
+        stockTable.changeSelection(rowIndex, 1, false, false);
+    }
+    
     private JPanel optionsMenu(){
         
         // Buttons
@@ -108,6 +122,7 @@ public class StockView {
         var selectAllButton = new JButton("Seleccionar todo"); 
         var deleteButton = new JButton("Eliminar");
         var saveButton = new JButton("Guardar");
+        var importButton = new JButton("Importar");
         
         Theme.Styles.applyGoodButtonColos(addButton);
         Theme.Styles.applyNormalButtonFont(addButton);
@@ -120,6 +135,9 @@ public class StockView {
         
         Theme.Styles.applySafeButtonColors(saveButton);
         Theme.Styles.applyNormalButtonFont(saveButton);
+        
+        Theme.Styles.applyNeutralButtonColors(importButton);
+        Theme.Styles.applyNormalButtonFont(importButton);
         
         //Events of the buttons.
         addButton.addActionListener((ActionEvent arg0) -> {            
@@ -137,6 +155,10 @@ public class StockView {
         saveButton.addActionListener((ActionEvent arg0) -> {
             saveButtonHandler();
         });
+        
+        importButton.addActionListener((ActionEvent arg0) -> {
+            importButtonHandler();
+        });
 
         // Container of the buttons.
         optionsMenu = new JPanel();
@@ -144,6 +166,7 @@ public class StockView {
         optionsMenu.add(selectAllButton);
         optionsMenu.add(deleteButton);
         optionsMenu.add(saveButton);
+        optionsMenu.add(importButton);
         Theme.Styles.applyOptionsBar(optionsMenu);
         
         return optionsMenu;
@@ -151,22 +174,19 @@ public class StockView {
     
     private void addButtonHandler(){
         //Create a new product in the DB.
+        final var db = DB.getInstance();
+        final var newID = db.calculateID("products", db.HIGHEST_VALUE);
         String[] newProductModel = {
+            newID,
             "Nuevo producto",// product name
             "0", //product price
             "Sin descripción",//product description
             "0", //product stock
             "0" //product sales count
         };
-        stockInstance.createNewProduct(newProductModel);
+        Stock.getInstance().createNewProduct(newProductModel);
 
-        //Update table content.
-        stockInstance.reloadStock();
-        tableModel.setDataVector(stockInstance.getStockAsArray(), tableHeader);
-
-        //Set focus on the new row
-        var rowIndex = stockTable.getRowCount() -1;
-        stockTable.changeSelection(rowIndex, 1, false, false);
+        reloadTable();
     }
     
     private void selectAllButtonHandler(){
@@ -222,15 +242,16 @@ public class StockView {
             tableData[row][2] = priceValue;//price
             tableData[row][3] = String.valueOf(stockTable.getValueAt(row, 3));//description 
             tableData[row][4] = stockValue;//stock
-            tableData[row][5] = String.valueOf(stockTable.getValueAt(row, 6));//salesCount
+            tableData[row][5] = String.valueOf(stockTable.getValueAt(row, 5));//salesCount
         }
 
         //Save data, reload product stock, and repaint.
-        if(stockInstance.saveProducts(tableData)){
+        final Stock SI = Stock.getInstance();
+        if(SI.saveProducts(tableData)){
             Alert.alert(view, "Productos guardados correctamente.");
         }
-        stockInstance.reloadStock();
-        tableModel.setDataVector(stockInstance.getStockAsArray(), tableHeader);
+        SI.reloadStock();
+        tableModel.setDataVector(SI.getStockAsArray(), tableHeader);
     }
     
     private void deleteButtonHandler(){
@@ -259,11 +280,68 @@ public class StockView {
         
         var answer = Confirm.deleteConfirm(title, confirmMsg);
 
+        final Stock SI = Stock.getInstance();
         if(answer == 1){
-            stockInstance.deleteProducts(productIDs);
+            SI.deleteProducts(productIDs);
         }
         
-        stockInstance.reloadStock();
-        tableModel.setDataVector(stockInstance.getStockAsArray(), tableHeader);
+        SI.reloadStock();
+        tableModel.setDataVector(SI.getStockAsArray(), tableHeader);
+    }
+    
+    /**
+     * Import products from CSV file.
+     */
+    private void importButtonHandler(){
+        var fileChooser = new ImportProducts();
+        fileChooser.setLocationRelativeTo(view);
+        fileChooser.setVisible(true);
+//        fileChooser.getSelectedFile();
+        /*Path pathToFile = Paths.get();
+
+        // create an instance of BufferedReader
+        // using try with resource, Java 7 feature to close resources
+        try (BufferedReader reader = Files.newBufferedReader(pathToFile,
+                StandardCharsets.UTF_8)) {
+
+            // read the first line from the text file
+            int lineCounter = 0;
+            String line = reader.readLine();
+            
+            // loop until all lines are read
+            while (line != null) {
+
+                // use string.split to load a string array with the values from
+                // each line of
+                // the file, using a comma as the delimiter
+                String[] attributes = line.split(",");
+
+                var db = DB.getInstance();
+                var newID = db.calculateID("products", db.HIGHEST_VALUE);
+                String[] newProductModel = {
+                    newID,//id
+                    String.valueOf(attributes[0]),// product name
+                    String.valueOf(attributes[1]), //product price
+                    String.valueOf(attributes[2]),//product description
+                    String.valueOf(attributes[3]), //product stock
+                    String.valueOf(attributes[4]) //product sales count
+                };
+                Stock.getInstance().createNewProduct(newProductModel);
+
+                lineCounter++;
+
+                // read next line before looping
+                // if end of file reached, line would be null
+                line = reader.readLine();
+            }
+            
+            Alert.alert(null, lineCounter + " productos importados con éxito.");
+            reloadTable();
+            
+        } catch (IOException ioe) {
+            Alert.alert(null, "Ha ocurrido un error al importar los productos."
+                    + "\nVerifica que el formato es correcto.");
+            ioe.printStackTrace();
+        }*/
     }
 }   

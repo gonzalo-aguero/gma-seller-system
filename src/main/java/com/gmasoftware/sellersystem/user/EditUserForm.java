@@ -175,6 +175,11 @@ public class EditUserForm extends javax.swing.JFrame {
     private void saveButtonHandler(){
         String username = usernameInput.getText();
         int permissionLevel = permissionLevelInput.getSelectedIndex() + 1;
+        
+        //if it's the root user.
+        if(permissionLevel == 4){
+            permissionLevel = 0;
+        }
                 
         char[] password = passwordInput.getPassword();
         char[] repeatedPassword = passwordInput1.getPassword();
