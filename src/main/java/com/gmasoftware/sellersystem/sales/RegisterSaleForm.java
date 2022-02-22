@@ -27,6 +27,7 @@ public class RegisterSaleForm extends javax.swing.JFrame{
     private com.gmasoftware.sellersystem.sales.SalesView salesView;
     
     private JLabel total;
+    
     /**
      * Creates new form RegisterNewSale
      * @param salesView
@@ -300,10 +301,12 @@ public class RegisterSaleForm extends javax.swing.JFrame{
         }
         
         var db = DB.getInstance();
+        var newID = db.calculateID("sales", db.HIGHEST_VALUE);
         db.connect();
         
-        String[] keys = {"totalAmount","totalProductCount","date","productList","productUnits","user"};
+        String[] keys = {"id", "totalAmount","totalProductCount","date","productList","productUnits","user"};
         String[] valuesToInsert = {
+            newID,
             String.valueOf(calculateTotal()),
             String.valueOf(productsCount),
             String.valueOf(now),
@@ -311,6 +314,7 @@ public class RegisterSaleForm extends javax.swing.JFrame{
             units,
             user.getUsername()
         };
+        
         //Register the sale in the database.
         db.insert("sales", keys, valuesToInsert);
         

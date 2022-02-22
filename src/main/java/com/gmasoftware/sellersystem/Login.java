@@ -205,7 +205,7 @@ public class Login extends javax.swing.JFrame {
     private void runHome(){
         this.setVisible(false);//hide login frame
         
-        MainWindow mw = new MainWindow();
+        var mw = MainWindow.getInstance();
         mw.setVisible(true);
         mw.setSize(900, 500);
         mw.setLocationRelativeTo(null);

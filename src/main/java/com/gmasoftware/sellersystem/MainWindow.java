@@ -4,21 +4,32 @@
  */
 package com.gmasoftware.sellersystem;
 
+import com.gmasoftware.sellersystem.stock.Stock;
 import com.gmasoftware.sellersystem.user.User;
 import java.awt.Image;
 import javax.swing.ImageIcon;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JScrollPane;
 /**
  *
  * @author GMA Software
  */
 public class MainWindow extends javax.swing.JFrame {
-
+    
+    /** Single global instance. **/
+    private static MainWindow mainWindowInstance;
+    public static synchronized MainWindow getInstance(){
+        if(mainWindowInstance == null){
+            mainWindowInstance =  new MainWindow();
+        }
+        return mainWindowInstance;
+    }
+    
     /**
      * Creates new form MainWindow
      */
-    public MainWindow() {
+    private MainWindow() {
         initComponents();
 
         String path = "./img/favicon.png";
@@ -215,6 +226,24 @@ public class MainWindow extends javax.swing.JFrame {
         contentPanel.removeAll();
         contentPanel.add(view);
         contentPanel.setVisible(true);
+    }
+
+    public JButton getSalesButon() {
+        return salesButon;
+    }
+
+    public JButton getStockButon() {
+        return stockButon;
+    }
+
+    public JButton getUsersButon() {
+        return usersButon;
+    }
+    
+    public void buttonsAreEnabled(boolean isEnabled){
+        salesButon.setEnabled(isEnabled);
+        stockButon.setEnabled(isEnabled);
+        usersButon.setEnabled(isEnabled);
     }
     /**
      * @param args the command line arguments

@@ -3,10 +3,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package com.gmasoftware.sellersystem.stock;
+import com.gmasoftware.sellersystem.MainWindow;
 import com.gmasoftware.sellersystem.database.DB;
 import com.gmasoftware.sellersystem.messages.Alert;
 import com.gmasoftware.sellersystem.messages.Confirm;
-import com.gmasoftware.sellersystem.sales.ImportProducts;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -23,6 +23,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  *
@@ -39,6 +44,7 @@ public class StockView {
     private boolean allSelected = false;
     private JScrollPane tableContainer;
     private JPanel optionsMenu;
+    private boolean tableIsSaved = true;
     
     public JScrollPane getView(){
         view = new JScrollPane(getContent());
@@ -74,6 +80,22 @@ public class StockView {
                 return column != 0;
             }
         };
+        
+        tableModel.addTableModelListener(new TableModelListener() {
+            @Override
+            public void tableChanged(TableModelEvent evt) {
+                if(tableIsSaved){
+                    setTableIsSaved(false);
+                }
+//                if(!tableIsSaved){
+//                    System.out.println("No está guardado, se guarda.");
+//                    saveButtonHandler(false);
+//                }else{
+//                    System.out.println("Ya está guardado.");
+//                }
+            }
+        });
+
     }
     
     private JScrollPane stockTable(){
@@ -88,12 +110,15 @@ public class StockView {
             public void keyTyped(KeyEvent e){}
             @Override
             public void keyPressed(KeyEvent e){
+                // Ctrl + S ---> Save the changes.
                 if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_S){
-                    saveButtonHandler();
+                    saveButtonHandler(true);
                 }
+                // Ctrl + N ---> Create new product.
                 if(e.isControlDown() && e.getKeyCode() == KeyEvent.VK_N){
                     addButtonHandler();
                 }
+                // Ctrl + Supr/Delete ---> Delete selected products.
                 if(e.isControlDown() && e.getKeyCode() == KeyEvent.VK_DELETE){
                     deleteButtonHandler();
                 }
@@ -113,6 +138,21 @@ public class StockView {
         //Set focus to last row
         final var rowIndex = stockTable.getRowCount() -1;
         stockTable.changeSelection(rowIndex, 1, false, false);
+        
+        setTableIsSaved(true);
+    }
+    
+    private void setTableIsSaved(boolean isSaved){
+        final var MW = MainWindow.getInstance();
+        if(isSaved){
+            //Once the changes have been saved, you can change the view.
+            MW.buttonsAreEnabled(true);
+            tableIsSaved = true;
+        }else{
+            //To prevent the user from switching views and losing unsaved changes.
+            MW.buttonsAreEnabled(false);
+            tableIsSaved = false;
+        }
     }
     
     private JPanel optionsMenu(){
@@ -153,7 +193,7 @@ public class StockView {
         });
                 
         saveButton.addActionListener((ActionEvent arg0) -> {
-            saveButtonHandler();
+            saveButtonHandler(true);
         });
         
         importButton.addActionListener((ActionEvent arg0) -> {
@@ -199,7 +239,7 @@ public class StockView {
         }
     }
     
-    private void saveButtonHandler(){
+    private void saveButtonHandler(boolean showAlerts){
         var numOfRows = stockTable.getRowCount();
         String[][] tableData = new String[numOfRows][7];
 
@@ -223,7 +263,7 @@ public class StockView {
             }
             
             //VALIDATE STOCK
-            var stockValue = String.valueOf(stockTable.getValueAt(row, 5));
+            var stockValue = String.valueOf(stockTable.getValueAt(row, 4));
             int stockValueInt = (int) 0;
             
             try{
@@ -248,10 +288,11 @@ public class StockView {
         //Save data, reload product stock, and repaint.
         final Stock SI = Stock.getInstance();
         if(SI.saveProducts(tableData)){
-            Alert.alert(view, "Productos guardados correctamente.");
+            if(showAlerts){
+                Alert.alert(view, "Productos guardados correctamente.");
+            }
         }
-        SI.reloadStock();
-        tableModel.setDataVector(SI.getStockAsArray(), tableHeader);
+        reloadTable();
     }
     
     private void deleteButtonHandler(){
@@ -285,20 +326,36 @@ public class StockView {
             SI.deleteProducts(productIDs);
         }
         
-        SI.reloadStock();
-        tableModel.setDataVector(SI.getStockAsArray(), tableHeader);
+        reloadTable();
     }
     
     /**
-     * Import products from CSV file.
+     * Open the CSV file chooser.
      */
     private void importButtonHandler(){
-        var fileChooser = new ImportProducts();
-        fileChooser.setLocationRelativeTo(view);
-        fileChooser.setVisible(true);
-//        fileChooser.getSelectedFile();
-        /*Path pathToFile = Paths.get();
-
+        JFileChooser fc = new JFileChooser();
+        fc.setAcceptAllFileFilterUsed(false);
+        FileFilter fileFilter = new FileNameExtensionFilter("Archivos CSV","csv");
+        fc.setFileFilter(fileFilter);
+        fc.setFont(new java.awt.Font("Ubuntu Light", 0, 15));
+        fc.setDragEnabled(true);
+        int selection = fc.showOpenDialog(null);
+        
+        //if click on accept
+        String path;
+        if(selection == JFileChooser.APPROVE_OPTION){
+            path = fc.getSelectedFile().getPath();
+            importFromThisFile(path);
+        }
+    }
+    
+    /**
+     * Import products from file passed as parameter.
+     * @param path Path to the file.
+     */
+    private void importFromThisFile(String path){
+        Path pathToFile = Paths.get(path);
+        
         // create an instance of BufferedReader
         // using try with resource, Java 7 feature to close resources
         try (BufferedReader reader = Files.newBufferedReader(pathToFile,
@@ -341,7 +398,6 @@ public class StockView {
         } catch (IOException ioe) {
             Alert.alert(null, "Ha ocurrido un error al importar los productos."
                     + "\nVerifica que el formato es correcto.");
-            ioe.printStackTrace();
-        }*/
+        }
     }
 }   

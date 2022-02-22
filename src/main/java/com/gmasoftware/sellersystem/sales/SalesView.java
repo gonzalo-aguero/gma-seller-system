@@ -46,7 +46,7 @@ public class SalesView {
     }
     
     /**
-     * @return Container with its components.
+     * @return Container with the view components.
      */
     public JScrollPane getView(){
         view = new JScrollPane(getContent());
@@ -80,6 +80,7 @@ public class SalesView {
      * ================== START TABLE ==================
      * =================================================
      */
+    
     private void tableModelFactory(){
         tableModel = new DefaultTableModel(salesClass.getSalesAsArray(), tableHeader){
             @Override
@@ -87,7 +88,6 @@ public class SalesView {
                 return false;
             }
         };
-        
     }
     
     private JScrollPane salesTable(){
@@ -102,9 +102,11 @@ public class SalesView {
             public void keyTyped(KeyEvent e){}
             @Override
             public void keyPressed(KeyEvent e){
+                //Ctrl + N ---> New Sale
                 if(e.isControlDown() && e.getKeyCode() == KeyEvent.VK_N){
                     addButtonHandler();
                 }
+                //Ctrl + supr/delete ---> Undo selected sales
                 if(e.isControlDown() && e.getKeyCode() == KeyEvent.VK_DELETE){
                     undoButtonHandler();
                 }
@@ -120,6 +122,7 @@ public class SalesView {
         salesClass.reloadSales();
         tableModel.setDataVector(salesClass.getSalesAsArray(), tableHeader);
     }
+    
     /**
      * =================================================
      * =================== END TABLE ===================
