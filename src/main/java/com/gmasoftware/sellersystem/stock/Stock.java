@@ -4,6 +4,7 @@
  */
 package com.gmasoftware.sellersystem.stock;
 import com.gmasoftware.sellersystem.database.DB;
+import com.gmasoftware.sellersystem.messages.Alert;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -109,7 +110,7 @@ public class Stock {
         var db = DB.getInstance();
         db.connect();
         
-        String[] keys = {"name","price","description","stock","salesCount"};
+        String[] keys = {"id","name","price","description","stock","salesCount"};
         
         db.insert("products", keys, valuesToInsert);
     }
@@ -149,13 +150,16 @@ public class Stock {
         var productIDsCount = productIDs.length;
         
         //Delete the products, one by one.
+        int deletedProductCounter = 0;
         for (int i = 0; i < productIDsCount; i++) {
             String whereCondition = "id = \""+ productIDs[i] +"\"";
             
             db.delete("products", whereCondition);
             System.out.println("Producto eliminado: "+productIDs[i]);
+            deletedProductCounter++;
         }
         
+        Alert.alert(null, deletedProductCounter + " productos eliminados con éxito.");
         db.disconnect();//Never forget ;)
         return true;
     }

@@ -298,7 +298,7 @@ public class DB {
             // The new ID will be the highest possible value.
             // For example: 1, 2, 5, 10, 11, (12) <--- This will be the new ID.
             var result = get(table, new String[]{"id"}, "1");
-            int highestValue = 1;
+            int highestValue = 0;
             
             //Get the highest ID
             for (String[] row : result) {

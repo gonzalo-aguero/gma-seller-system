@@ -3,11 +3,19 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package com.gmasoftware.sellersystem.stock;
+import com.gmasoftware.sellersystem.MainWindow;
+import com.gmasoftware.sellersystem.database.DB;
 import com.gmasoftware.sellersystem.messages.Alert;
 import com.gmasoftware.sellersystem.messages.Confirm;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -15,6 +23,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  *
@@ -29,13 +42,9 @@ public class StockView {
     private final String[] tableHeader = {"ID", "Nombre", "Valor", "Descripción", "Stock", "Ventas"};
     private DefaultTableModel tableModel;
     private boolean allSelected = false;
-    private final Stock stockInstance;
     private JScrollPane tableContainer;
     private JPanel optionsMenu;
-    
-    public StockView(){
-        this.stockInstance = Stock.getInstance();
-    }
+    private boolean tableIsSaved = true;
     
     public JScrollPane getView(){
         view = new JScrollPane(getContent());
@@ -64,12 +73,29 @@ public class StockView {
     }
     
     private void tableModelFactory(){
-        tableModel = new DefaultTableModel(stockInstance.getStockAsArray(), tableHeader){
+        final String[][] stock = Stock.getInstance().getStockAsArray();
+        tableModel = new DefaultTableModel(stock, tableHeader){
             @Override
             public boolean isCellEditable(int row, int column){
                 return column != 0;
             }
         };
+        
+        tableModel.addTableModelListener(new TableModelListener() {
+            @Override
+            public void tableChanged(TableModelEvent evt) {
+                if(tableIsSaved){
+                    setTableIsSaved(false);
+                }
+//                if(!tableIsSaved){
+//                    System.out.println("No está guardado, se guarda.");
+//                    saveButtonHandler(false);
+//                }else{
+//                    System.out.println("Ya está guardado.");
+//                }
+            }
+        });
+
     }
     
     private JScrollPane stockTable(){
@@ -84,12 +110,15 @@ public class StockView {
             public void keyTyped(KeyEvent e){}
             @Override
             public void keyPressed(KeyEvent e){
+                // Ctrl + S ---> Save the changes.
                 if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_S){
-                    saveButtonHandler();
+                    saveButtonHandler(true);
                 }
+                // Ctrl + N ---> Create new product.
                 if(e.isControlDown() && e.getKeyCode() == KeyEvent.VK_N){
                     addButtonHandler();
                 }
+                // Ctrl + Supr/Delete ---> Delete selected products.
                 if(e.isControlDown() && e.getKeyCode() == KeyEvent.VK_DELETE){
                     deleteButtonHandler();
                 }
@@ -101,6 +130,31 @@ public class StockView {
         return tableContainer;
     }
     
+    private void reloadTable(){
+        //Update table content.
+        final String[][] stock = Stock.getInstance().getStockAsArray();
+        tableModel.setDataVector(stock, tableHeader);
+
+        //Set focus to last row
+        final var rowIndex = stockTable.getRowCount() -1;
+        stockTable.changeSelection(rowIndex, 1, false, false);
+        
+        setTableIsSaved(true);
+    }
+    
+    private void setTableIsSaved(boolean isSaved){
+        final var MW = MainWindow.getInstance();
+        if(isSaved){
+            //Once the changes have been saved, you can change the view.
+            MW.buttonsAreEnabled(true);
+            tableIsSaved = true;
+        }else{
+            //To prevent the user from switching views and losing unsaved changes.
+            MW.buttonsAreEnabled(false);
+            tableIsSaved = false;
+        }
+    }
+    
     private JPanel optionsMenu(){
         
         // Buttons
@@ -108,6 +162,7 @@ public class StockView {
         var selectAllButton = new JButton("Seleccionar todo"); 
         var deleteButton = new JButton("Eliminar");
         var saveButton = new JButton("Guardar");
+        var importButton = new JButton("Importar");
         
         Theme.Styles.applyGoodButtonColos(addButton);
         Theme.Styles.applyNormalButtonFont(addButton);
@@ -120,6 +175,9 @@ public class StockView {
         
         Theme.Styles.applySafeButtonColors(saveButton);
         Theme.Styles.applyNormalButtonFont(saveButton);
+        
+        Theme.Styles.applyNeutralButtonColors(importButton);
+        Theme.Styles.applyNormalButtonFont(importButton);
         
         //Events of the buttons.
         addButton.addActionListener((ActionEvent arg0) -> {            
@@ -135,7 +193,11 @@ public class StockView {
         });
                 
         saveButton.addActionListener((ActionEvent arg0) -> {
-            saveButtonHandler();
+            saveButtonHandler(true);
+        });
+        
+        importButton.addActionListener((ActionEvent arg0) -> {
+            importButtonHandler();
         });
 
         // Container of the buttons.
@@ -144,6 +206,7 @@ public class StockView {
         optionsMenu.add(selectAllButton);
         optionsMenu.add(deleteButton);
         optionsMenu.add(saveButton);
+        optionsMenu.add(importButton);
         Theme.Styles.applyOptionsBar(optionsMenu);
         
         return optionsMenu;
@@ -151,22 +214,19 @@ public class StockView {
     
     private void addButtonHandler(){
         //Create a new product in the DB.
+        final var db = DB.getInstance();
+        final var newID = db.calculateID("products", db.HIGHEST_VALUE);
         String[] newProductModel = {
+            newID,
             "Nuevo producto",// product name
             "0", //product price
             "Sin descripción",//product description
             "0", //product stock
             "0" //product sales count
         };
-        stockInstance.createNewProduct(newProductModel);
+        Stock.getInstance().createNewProduct(newProductModel);
 
-        //Update table content.
-        stockInstance.reloadStock();
-        tableModel.setDataVector(stockInstance.getStockAsArray(), tableHeader);
-
-        //Set focus on the new row
-        var rowIndex = stockTable.getRowCount() -1;
-        stockTable.changeSelection(rowIndex, 1, false, false);
+        reloadTable();
     }
     
     private void selectAllButtonHandler(){
@@ -179,7 +239,7 @@ public class StockView {
         }
     }
     
-    private void saveButtonHandler(){
+    private void saveButtonHandler(boolean showAlerts){
         var numOfRows = stockTable.getRowCount();
         String[][] tableData = new String[numOfRows][7];
 
@@ -203,7 +263,7 @@ public class StockView {
             }
             
             //VALIDATE STOCK
-            var stockValue = String.valueOf(stockTable.getValueAt(row, 5));
+            var stockValue = String.valueOf(stockTable.getValueAt(row, 4));
             int stockValueInt = (int) 0;
             
             try{
@@ -222,15 +282,17 @@ public class StockView {
             tableData[row][2] = priceValue;//price
             tableData[row][3] = String.valueOf(stockTable.getValueAt(row, 3));//description 
             tableData[row][4] = stockValue;//stock
-            tableData[row][5] = String.valueOf(stockTable.getValueAt(row, 6));//salesCount
+            tableData[row][5] = String.valueOf(stockTable.getValueAt(row, 5));//salesCount
         }
 
         //Save data, reload product stock, and repaint.
-        if(stockInstance.saveProducts(tableData)){
-            Alert.alert(view, "Productos guardados correctamente.");
+        final Stock SI = Stock.getInstance();
+        if(SI.saveProducts(tableData)){
+            if(showAlerts){
+                Alert.alert(view, "Productos guardados correctamente.");
+            }
         }
-        stockInstance.reloadStock();
-        tableModel.setDataVector(stockInstance.getStockAsArray(), tableHeader);
+        reloadTable();
     }
     
     private void deleteButtonHandler(){
@@ -259,11 +321,83 @@ public class StockView {
         
         var answer = Confirm.deleteConfirm(title, confirmMsg);
 
+        final Stock SI = Stock.getInstance();
         if(answer == 1){
-            stockInstance.deleteProducts(productIDs);
+            SI.deleteProducts(productIDs);
         }
         
-        stockInstance.reloadStock();
-        tableModel.setDataVector(stockInstance.getStockAsArray(), tableHeader);
+        reloadTable();
+    }
+    
+    /**
+     * Open the CSV file chooser.
+     */
+    private void importButtonHandler(){
+        JFileChooser fc = new JFileChooser();
+        fc.setAcceptAllFileFilterUsed(false);
+        FileFilter fileFilter = new FileNameExtensionFilter("Archivos CSV","csv");
+        fc.setFileFilter(fileFilter);
+        fc.setFont(new java.awt.Font("Ubuntu Light", 0, 15));
+        fc.setDragEnabled(true);
+        int selection = fc.showOpenDialog(null);
+        
+        //if click on accept
+        String path;
+        if(selection == JFileChooser.APPROVE_OPTION){
+            path = fc.getSelectedFile().getPath();
+            importFromThisFile(path);
+        }
+    }
+    
+    /**
+     * Import products from file passed as parameter.
+     * @param path Path to the file.
+     */
+    private void importFromThisFile(String path){
+        Path pathToFile = Paths.get(path);
+        
+        // create an instance of BufferedReader
+        // using try with resource, Java 7 feature to close resources
+        try (BufferedReader reader = Files.newBufferedReader(pathToFile,
+                StandardCharsets.UTF_8)) {
+
+            // read the first line from the text file
+            int lineCounter = 0;
+            String line = reader.readLine();
+            
+            // loop until all lines are read
+            while (line != null) {
+
+                // use string.split to load a string array with the values from
+                // each line of
+                // the file, using a comma as the delimiter
+                String[] attributes = line.split(",");
+
+                var db = DB.getInstance();
+                var newID = db.calculateID("products", db.HIGHEST_VALUE);
+                String[] newProductModel = {
+                    newID,//id
+                    String.valueOf(attributes[0]),// product name
+                    String.valueOf(attributes[1]), //product price
+                    String.valueOf(attributes[2]),//product description
+                    String.valueOf(attributes[3]), //product stock
+                    String.valueOf(attributes[4]) //product sales count
+                };
+                Stock.getInstance().createNewProduct(newProductModel);
+
+                lineCounter++;
+
+                // read next line before looping
+                // if end of file reached, line would be null
+                line = reader.readLine();
+            }
+            
+            Alert.alert(null, lineCounter + " productos importados con éxito.");
+            reloadTable();
+            
+        } catch (IOException ioe) {
+            Alert.alert(null, "Ha ocurrido un error al importar los productos."
+                    + "\nVerifica que el formato es correcto.");
+        }
     }
 }   
