@@ -359,13 +359,12 @@ public class ProductBlock extends JPanel{
     // =======================================
     
     private void removeButtonFactory(){
-        ImageIcon imageIcon = new ImageIcon("./img/remove.png"); // load the image to a imageIcon
-        Image image = imageIcon.getImage(); // transform it 
-        Image newImg = image.getScaledInstance(28, 28, Image.SCALE_SMOOTH); // scale it the smooth way  
-        
-        imageIcon = new ImageIcon(newImg);  // transform it back
-
-        removeButton = new JButton(imageIcon);
+        removeButton = new JButton();
+        com.gmasoftware.sellersystem.theme.Icons.setButtonIcon(
+                "img/remove.png",
+                removeButton,
+                20,20
+        );
     }
     
     protected JButton getRemoveButton() {

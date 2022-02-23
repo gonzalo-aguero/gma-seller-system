@@ -142,16 +142,16 @@ public class SalesView {
     private JPanel optionsMenu(){
         // Buttons
         var addButton = new JButton("Crear venta");
-        Theme.Styles.applyGoodButtonColos(addButton);
-        Theme.Styles.applyNormalButtonFont(addButton);
+        com.gmasoftware.sellersystem.theme.Styles.applyGoodButtonColos(addButton);
+        com.gmasoftware.sellersystem.theme.Styles.applyNormalButtonFont(addButton);
         
         var selectAllButton = new JButton("Seleccionar todo"); 
-        Theme.Styles.applyNeutralButtonColors(selectAllButton);
-        Theme.Styles.applyNormalButtonFont(selectAllButton);
+        com.gmasoftware.sellersystem.theme.Styles.applyNeutralButtonColors(selectAllButton);
+        com.gmasoftware.sellersystem.theme.Styles.applyNormalButtonFont(selectAllButton);
         
         var undoButton = new JButton("Deshacer venta");
-        Theme.Styles.applyBadButtonColors(undoButton);
-        Theme.Styles.applyNormalButtonFont(undoButton);
+        com.gmasoftware.sellersystem.theme.Styles.applyBadButtonColors(undoButton);
+        com.gmasoftware.sellersystem.theme.Styles.applyNormalButtonFont(undoButton);
         
         //Events of the buttons.
         addButton.addActionListener((ActionEvent arg0) -> {            
@@ -171,7 +171,7 @@ public class SalesView {
         optionsMenu.add(addButton);
         optionsMenu.add(selectAllButton);
         optionsMenu.add(undoButton);
-        Theme.Styles.applyOptionsBar(optionsMenu);
+        com.gmasoftware.sellersystem.theme.Styles.applyOptionsBar(optionsMenu);
         
         return optionsMenu;
     }

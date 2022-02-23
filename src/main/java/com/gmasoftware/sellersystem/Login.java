@@ -22,10 +22,7 @@ public class Login extends javax.swing.JFrame {
      */
     public Login() {
         initComponents();
-        
-        String path = "./img/favicon.png";
-        Image icon = new ImageIcon(path).getImage();
-        this.setIconImage(icon);
+        com.gmasoftware.sellersystem.theme.Icons.setDefaultFrameIcon(this);
     }
 
     /**
@@ -207,8 +204,6 @@ public class Login extends javax.swing.JFrame {
         
         var mw = MainWindow.getInstance();
         mw.setVisible(true);
-        mw.setSize(900, 500);
-        mw.setLocationRelativeTo(null);
     }
     /**
      * @param args the command line arguments

@@ -154,14 +154,14 @@ public class UserView {
         var selectAllButton = new JButton("Seleccionar todos"); 
         var deleteButton = new JButton("Eliminar"); 
         
-        Theme.Styles.applyGoodButtonColos(addButton);
-        Theme.Styles.applyNormalButtonFont(addButton);
+        com.gmasoftware.sellersystem.theme.Styles.applyGoodButtonColos(addButton);
+        com.gmasoftware.sellersystem.theme.Styles.applyNormalButtonFont(addButton);
         
-        Theme.Styles.applyNeutralButtonColors(selectAllButton);
-        Theme.Styles.applyNormalButtonFont(selectAllButton);
+        com.gmasoftware.sellersystem.theme.Styles.applyNeutralButtonColors(selectAllButton);
+        com.gmasoftware.sellersystem.theme.Styles.applyNormalButtonFont(selectAllButton);
         
-        Theme.Styles.applyBadButtonColors(deleteButton);
-        Theme.Styles.applyNormalButtonFont(deleteButton);
+        com.gmasoftware.sellersystem.theme.Styles.applyBadButtonColors(deleteButton);
+        com.gmasoftware.sellersystem.theme.Styles.applyNormalButtonFont(deleteButton);
         
         //Events of the buttons.
         addButton.addActionListener((ActionEvent arg0) -> {            
@@ -181,7 +181,7 @@ public class UserView {
         optionsMenu.add(addButton);
         optionsMenu.add(selectAllButton);
         optionsMenu.add(deleteButton);
-        Theme.Styles.applyOptionsBar(optionsMenu);
+        com.gmasoftware.sellersystem.theme.Styles.applyOptionsBar(optionsMenu);
         
         return optionsMenu;
     }

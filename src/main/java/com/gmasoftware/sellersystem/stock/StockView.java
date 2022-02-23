@@ -164,20 +164,20 @@ public class StockView {
         var saveButton = new JButton("Guardar");
         var importButton = new JButton("Importar");
         
-        Theme.Styles.applyGoodButtonColos(addButton);
-        Theme.Styles.applyNormalButtonFont(addButton);
+        com.gmasoftware.sellersystem.theme.Styles.applyGoodButtonColos(addButton);
+        com.gmasoftware.sellersystem.theme.Styles.applyNormalButtonFont(addButton);
         
-        Theme.Styles.applyNeutralButtonColors(selectAllButton);
-        Theme.Styles.applyNormalButtonFont(selectAllButton);
+        com.gmasoftware.sellersystem.theme.Styles.applyNeutralButtonColors(selectAllButton);
+        com.gmasoftware.sellersystem.theme.Styles.applyNormalButtonFont(selectAllButton);
         
-        Theme.Styles.applyBadButtonColors(deleteButton);
-        Theme.Styles.applyNormalButtonFont(deleteButton);
+        com.gmasoftware.sellersystem.theme.Styles.applyBadButtonColors(deleteButton);
+        com.gmasoftware.sellersystem.theme.Styles.applyNormalButtonFont(deleteButton);
         
-        Theme.Styles.applySafeButtonColors(saveButton);
-        Theme.Styles.applyNormalButtonFont(saveButton);
+        com.gmasoftware.sellersystem.theme.Styles.applySafeButtonColors(saveButton);
+        com.gmasoftware.sellersystem.theme.Styles.applyNormalButtonFont(saveButton);
         
-        Theme.Styles.applyNeutralButtonColors(importButton);
-        Theme.Styles.applyNormalButtonFont(importButton);
+        com.gmasoftware.sellersystem.theme.Styles.applyNeutralButtonColors(importButton);
+        com.gmasoftware.sellersystem.theme.Styles.applyNormalButtonFont(importButton);
         
         //Events of the buttons.
         addButton.addActionListener((ActionEvent arg0) -> {            
@@ -207,7 +207,7 @@ public class StockView {
         optionsMenu.add(deleteButton);
         optionsMenu.add(saveButton);
         optionsMenu.add(importButton);
-        Theme.Styles.applyOptionsBar(optionsMenu);
+        com.gmasoftware.sellersystem.theme.Styles.applyOptionsBar(optionsMenu);
         
         return optionsMenu;
     }

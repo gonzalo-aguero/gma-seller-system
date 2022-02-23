@@ -4,11 +4,13 @@
  */
 package com.gmasoftware.sellersystem;
 
-import com.gmasoftware.sellersystem.stock.Stock;
 import com.gmasoftware.sellersystem.user.User;
+import java.awt.Dimension;
 import java.awt.Image;
+import java.awt.Toolkit;
 import javax.swing.ImageIcon;
 import javax.swing.BoxLayout;
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
 /**
@@ -31,43 +33,26 @@ public class MainWindow extends javax.swing.JFrame {
      */
     private MainWindow() {
         initComponents();
-
-        String path = "./img/favicon.png";
-        Image icon = new ImageIcon(path).getImage();
-        this.setIconImage(icon);
         
-        ImageIcon imageIcon = new ImageIcon("./img/remove.png"); // load the image to a imageIcon
-        Image image = imageIcon.getImage(); // transform it 
-        Image newImg = image.getScaledInstance(100, 100, Image.SCALE_SMOOTH); // scale it the smooth way  
-        imageIcon = new ImageIcon(newImg);
-        salesButon.setIcon(imageIcon);
+        setExtendedState(6);
 
-        this.setExtendedState(6);
+        com.gmasoftware.sellersystem.theme.Icons.setDefaultFrameIcon(this);
+        com.gmasoftware.sellersystem.theme.Icons.setButtonIcon(
+                "img/remove.png",
+                salesButon,
+                25, 25
+        );
+        
         contentPanel.setLayout(new BoxLayout(contentPanel,BoxLayout.Y_AXIS));
-        
         title.setText("Hola, " + User.getInstance().getUsername() +"!");
         
-        var pl = User.getInstance().getPermissionLevel();
-        if(pl > 1){
-            switch (pl) {
-                case 2:
-                    usersButon.setEnabled(false);
-                    break;
-                case 3:
-                    stockButon.setEnabled(false);
-                    usersButon.setEnabled(false);
-                    break;
-                default:
-                    stockButon.setEnabled(false);
-                    salesButon.setEnabled(false);
-                    usersButon.setEnabled(false);
-            }
-        }
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        mainPanel.setPreferredSize(new Dimension(screenSize.width, mainPanel.getHeight()));
+        mainMenu.setPreferredSize(new Dimension((screenSize.width / 4), mainMenu.getHeight()));
         
-        Theme.Styles.applyNormalButtonColors(salesButon);
-        Theme.Styles.applyNormalButtonColors(stockButon);
-        Theme.Styles.applyNormalButtonColors(usersButon);
+        permissionRestrictions();
     }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -77,6 +62,7 @@ public class MainWindow extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel1 = new javax.swing.JPanel();
         mainPanel = new javax.swing.JPanel();
         title = new javax.swing.JLabel();
         contentPanel = new javax.swing.JPanel();
@@ -85,25 +71,37 @@ public class MainWindow extends javax.swing.JFrame {
         stockButon = new javax.swing.JButton();
         usersButon = new javax.swing.JButton();
 
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("GMA Seller System");
         setBackground(new java.awt.Color(23, 23, 23));
+        setMaximumSize(null);
+        setMinimumSize(null);
         setResizable(false);
+        setSize(new java.awt.Dimension(20, 20));
 
         title.setFont(new java.awt.Font("Ubuntu Light", 0, 32)); // NOI18N
         title.setText("BIENVENIDO");
-
-        contentPanel.setBorder(null);
 
         javax.swing.GroupLayout contentPanelLayout = new javax.swing.GroupLayout(contentPanel);
         contentPanel.setLayout(contentPanelLayout);
         contentPanelLayout.setHorizontalGroup(
             contentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 351, Short.MAX_VALUE)
+            .addGap(0, 457, Short.MAX_VALUE)
         );
         contentPanelLayout.setVerticalGroup(
             contentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 691, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         salesButon.setFont(new java.awt.Font("Ubuntu", 0, 24)); // NOI18N
@@ -140,7 +138,7 @@ public class MainWindow extends javax.swing.JFrame {
         mainMenuLayout.setHorizontalGroup(
             mainMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(salesButon, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(stockButon, javax.swing.GroupLayout.DEFAULT_SIZE, 349, Short.MAX_VALUE)
+            .addComponent(stockButon, javax.swing.GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE)
             .addComponent(usersButon, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         mainMenuLayout.setVerticalGroup(
@@ -152,7 +150,7 @@ public class MainWindow extends javax.swing.JFrame {
                 .addComponent(stockButon)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(usersButon)
-                .addContainerGap(449, Short.MAX_VALUE))
+                .addContainerGap(162, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
@@ -175,8 +173,8 @@ public class MainWindow extends javax.swing.JFrame {
                 .addComponent(title)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(mainMenu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(contentPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(contentPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(mainMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -188,10 +186,7 @@ public class MainWindow extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(mainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+            .addComponent(mainPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -240,6 +235,38 @@ public class MainWindow extends javax.swing.JFrame {
         return usersButon;
     }
     
+    /**
+     * Set the state of the components based on the permission level.
+     */
+    private void permissionRestrictions(){
+        var pl = User.getInstance().getPermissionLevel();
+        if(pl > 1){
+            switch (pl) {
+                case 2:
+                    usersButon.setEnabled(false);
+                    break;
+                case 3:
+                    stockButon.setEnabled(false);
+                    usersButon.setEnabled(false);
+                    break;
+                default:
+                    stockButon.setEnabled(false);
+                    salesButon.setEnabled(false);
+                    usersButon.setEnabled(false);
+            }
+        }
+        
+        com.gmasoftware.sellersystem.theme.Styles.applyNormalButtonColors(salesButon);
+        com.gmasoftware.sellersystem.theme.Styles.applyNormalButtonColors(stockButon);
+        com.gmasoftware.sellersystem.theme.Styles.applyNormalButtonColors(usersButon);
+    }
+    
+    /**
+     * Set the main menu buttons to enabled (or disabled if the passed parameter is false). 
+     * It is to set the buttons to disabled when the user is editing something to prevent
+     * the user from losing unsaved changes.
+     * @param isEnabled 
+     */
     public void buttonsAreEnabled(boolean isEnabled){
         salesButon.setEnabled(isEnabled);
         stockButon.setEnabled(isEnabled);
@@ -285,6 +312,7 @@ public class MainWindow extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel contentPanel;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel mainMenu;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JButton salesButon;

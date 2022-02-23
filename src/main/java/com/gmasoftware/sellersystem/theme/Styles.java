@@ -1,4 +1,4 @@
-package Theme;
+package com.gmasoftware.sellersystem.theme;
 
 import java.awt.Color;
 import javax.swing.JButton;

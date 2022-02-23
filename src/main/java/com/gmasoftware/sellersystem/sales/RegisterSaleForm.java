@@ -6,7 +6,6 @@ package com.gmasoftware.sellersystem.sales;
 
 import com.gmasoftware.sellersystem.database.DB;
 import com.gmasoftware.sellersystem.user.User;
-import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -24,7 +23,7 @@ import javax.swing.JPanel;
 public class RegisterSaleForm extends javax.swing.JFrame{
     private final User user;
     private ProductBlock[] productBlocks = {};
-    private com.gmasoftware.sellersystem.sales.SalesView salesView;
+    private final com.gmasoftware.sellersystem.sales.SalesView salesView;
     
     private JLabel total;
     
