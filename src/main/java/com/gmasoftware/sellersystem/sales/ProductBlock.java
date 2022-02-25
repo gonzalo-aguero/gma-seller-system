@@ -8,7 +8,6 @@ import com.gmasoftware.sellersystem.messages.Alert;
 import com.gmasoftware.sellersystem.stock.Product;
 import com.gmasoftware.sellersystem.stock.Stock;
 import java.awt.Color;
-import java.awt.Image;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
@@ -16,7 +15,6 @@ import java.awt.event.KeyListener;
 import java.util.stream.IntStream;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -24,7 +22,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.text.Element;
 
 /**
  *
@@ -39,7 +36,7 @@ public class ProductBlock extends JPanel{
     
     private JLabel productUnitsTitle;
     private JTextField productUnits;
-    private String maximumTextInUnits = null;
+    private final String maximumTextInUnits = null;
     
     private JLabel productSubtotalTitle;
     private JLabel productSubtotal;

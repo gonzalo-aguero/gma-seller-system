@@ -6,11 +6,8 @@ package com.gmasoftware.sellersystem;
 
 import com.gmasoftware.sellersystem.user.User;
 import java.awt.Dimension;
-import java.awt.Image;
 import java.awt.Toolkit;
-import javax.swing.ImageIcon;
 import javax.swing.BoxLayout;
-import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
 /**
@@ -20,7 +17,7 @@ import javax.swing.JScrollPane;
 public class MainWindow extends javax.swing.JFrame {
     
     /** Single global instance. **/
-    private static MainWindow mainWindowInstance;
+    private static MainWindow mainWindowInstance = null;
     public static synchronized MainWindow getInstance(){
         if(mainWindowInstance == null){
             mainWindowInstance =  new MainWindow();
@@ -70,6 +67,7 @@ public class MainWindow extends javax.swing.JFrame {
         salesButon = new javax.swing.JButton();
         stockButon = new javax.swing.JButton();
         usersButon = new javax.swing.JButton();
+        closeSesionButton = new javax.swing.JButton();
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -101,7 +99,7 @@ public class MainWindow extends javax.swing.JFrame {
         );
         contentPanelLayout.setVerticalGroup(
             contentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 459, Short.MAX_VALUE)
         );
 
         salesButon.setFont(new java.awt.Font("Ubuntu", 0, 24)); // NOI18N
@@ -133,24 +131,34 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
 
+        closeSesionButton.setFont(new java.awt.Font("Ubuntu", 0, 24)); // NOI18N
+        closeSesionButton.setText("CERRAR SESIÓN");
+        closeSesionButton.setMargin(new java.awt.Insets(20, 0, 20, 0));
+        closeSesionButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                closeSesionButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout mainMenuLayout = new javax.swing.GroupLayout(mainMenu);
         mainMenu.setLayout(mainMenuLayout);
         mainMenuLayout.setHorizontalGroup(
             mainMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(salesButon, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(stockButon, javax.swing.GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE)
             .addComponent(usersButon, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(salesButon, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(closeSesionButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         mainMenuLayout.setVerticalGroup(
             mainMenuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(mainMenuLayout.createSequentialGroup()
-                .addContainerGap()
                 .addComponent(salesButon)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(stockButon)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(usersButon)
-                .addContainerGap(162, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(closeSesionButton))
         );
 
         javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
@@ -211,6 +219,10 @@ public class MainWindow extends javax.swing.JFrame {
         var view = salesView.getView();
         this.setNewView(view);
     }//GEN-LAST:event_salesButonActionPerformed
+
+    private void closeSesionButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeSesionButtonActionPerformed
+        User.deleteSesion();
+    }//GEN-LAST:event_closeSesionButtonActionPerformed
     
     /**
      * Put a new view in the content panel.
@@ -272,6 +284,15 @@ public class MainWindow extends javax.swing.JFrame {
         stockButon.setEnabled(isEnabled);
         usersButon.setEnabled(isEnabled);
     }
+    
+    /**
+     * Hide the JFrame and set to null.
+     */
+    public static void destroyInstance(){
+        mainWindowInstance.setVisible(false);
+        mainWindowInstance = null;
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -311,6 +332,7 @@ public class MainWindow extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton closeSesionButton;
     private javax.swing.JPanel contentPanel;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel mainMenu;

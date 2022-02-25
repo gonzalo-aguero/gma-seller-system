@@ -7,21 +7,28 @@ package com.gmasoftware.sellersystem;
 import com.gmasoftware.sellersystem.messages.Alert;
 import java.awt.event.KeyEvent;
 import com.gmasoftware.sellersystem.user.User;
-import java.awt.Image;
-import javax.swing.ImageIcon;
-
 
 /**
  *
  * @author GMA Software
  */
 public class Login extends javax.swing.JFrame {
-
+    private static Login loginInstance;
+    
+    public static synchronized Login getInstance(){
+        if(loginInstance == null){
+            loginInstance = new Login();
+        }
+        return loginInstance;
+    }
+    
     /**
      * Creates new form Login
      */
-    public Login() {
+    private Login() {
         initComponents();
+        setSize(300, 400);
+        setLocationRelativeTo(null);
         com.gmasoftware.sellersystem.theme.Icons.setDefaultFrameIcon(this);
     }
 
