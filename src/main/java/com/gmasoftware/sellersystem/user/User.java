@@ -4,6 +4,8 @@
  */
 package com.gmasoftware.sellersystem.user;
 
+import com.gmasoftware.sellersystem.Login;
+import com.gmasoftware.sellersystem.MainWindow;
 import com.gmasoftware.sellersystem.database.DB;
 /**
  *
@@ -11,9 +13,9 @@ import com.gmasoftware.sellersystem.database.DB;
  */
 public class User {
     private static User userInstance;
-    private int userID;
+    private int userID = -1;
     private String username;
-    private int permissionLevel;
+    private int permissionLevel = -1;
     private boolean authenticated;
     
     private User(){
@@ -95,5 +97,15 @@ public class User {
 
     public boolean isAuthenticated() {
         return authenticated;
+    }
+    
+    /**
+     * Delete or close sesion of the user.
+     * Set all the variables to null.
+     */
+    public static void deleteSesion(){
+        userInstance = null;
+        MainWindow.destroyInstance();
+        Login.getInstance().setVisible(true);
     }
 }

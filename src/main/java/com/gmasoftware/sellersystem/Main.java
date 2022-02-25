@@ -28,9 +28,7 @@ public class Main {
             java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         
-        Login login = new Login();
+        Login login = Login.getInstance();
         login.setVisible(true);
-        login.setSize(300, 400);
-        login.setLocationRelativeTo(null);
     }
 }
