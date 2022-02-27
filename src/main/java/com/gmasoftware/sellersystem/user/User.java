@@ -103,7 +103,7 @@ public class User {
      * Delete or close sesion of the user.
      * Set all the variables to null.
      */
-    public static void deleteSesion(){
+    public static void destroyInstance(){
         userInstance = null;
         MainWindow.destroyInstance();
         Login.getInstance().setVisible(true);

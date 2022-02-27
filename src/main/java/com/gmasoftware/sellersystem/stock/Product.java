@@ -6,7 +6,6 @@ package com.gmasoftware.sellersystem.stock;
 
 import com.gmasoftware.sellersystem.database.DB;
 import java.io.IOException;
-import javax.swing.ImageIcon;
 
 /**
  *

@@ -1,6 +1,7 @@
 package com.gmasoftware.sellersystem.database;
 
 
+import com.gmasoftware.sellersystem.messages.Alert;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -74,8 +75,11 @@ public class Model {
                 tablesCount++;
             }
             
-            if(tablesCount > 0){
-                Model.createModel();
+            if(tablesCount < 1 ){
+                Model.executeQueries();
+            }else if(tablesCount < DB.numberOfTables){
+                Alert.alert(null, "Ha ocurrido un error. Es posible que se haya perdido información de la base de datos."
+                        + "\nLe recomendamos comunicarse con soporte técnico para solucionar el problema.");
             }
         } catch (SQLException ex) {
             Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
@@ -84,13 +88,16 @@ public class Model {
         }
     }
     
-    private static void createModel(){
-        executeQueries();
-    }
-    
+    /**
+     * It creates all the necessary tables in the database.
+     */
     private static void executeQueries(){
+        var db = DB.getInstance();
+        db.connect();
+        db.setAutoDisconnect(false);
         for (String query : queries) {
-            System.out.println("SQL: "+query);
+            db.execute(query);
         }
+        db.disconnect();
     }
 }

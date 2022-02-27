@@ -21,6 +21,8 @@ public class EditUserForm extends javax.swing.JFrame {
      */
     public EditUserForm(UserView userView, int userID) {
         this.userView = userView;
+        com.gmasoftware.sellersystem.theme.Icons.setDefaultFrameIcon(this);
+        
         initComponents();
         this.userID = userID;
         loadUserData(userID);
