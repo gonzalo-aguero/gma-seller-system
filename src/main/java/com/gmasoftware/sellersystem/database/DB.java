@@ -5,6 +5,7 @@
 package com.gmasoftware.sellersystem.database;
 
 import com.gmasoftware.sellersystem.messages.Alert;
+import io.github.cdimascio.dotenv.Dotenv;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -13,7 +14,6 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
 /**
  *  ~~~ Singleton ~~~.
  * @author GMA Software
@@ -21,14 +21,17 @@ import java.util.logging.Logger;
 public class DB {
     /** Single global instance **/
     private static DB DB_Instance;
+    protected static final int numberOfTables = 3;
     
-    private final String username = "root";
-    private final String password = "";
-    private final String dbName = "gma_sellersystem";
-    private final String url = "jdbc:mysql://localhost/" + dbName;
-    private Connection connection;
-    private boolean  connected;
-    private boolean autoDisconnect; //Automatically disconnect after request.
+    private final String DB_USERNAME;
+    private final String DB_PASSWORD;
+    private final String DB_NAME;
+    private final String DB_SERVER;
+    private final String DB_LINK;
+    
+    protected Connection connection;
+    protected boolean  connected;
+    protected boolean autoDisconnect; //Automatically disconnect after request.
     
     // CALCULATE ID METHODS.
     public final String HIGHEST_VALUE = "HIGHEST_VALUE";
@@ -37,12 +40,43 @@ public class DB {
     public static synchronized DB getInstance(){
         if(DB_Instance == null){
             DB_Instance =  new DB();
+            Model.checkIfTablesExist();
         }
-        
         return DB_Instance;
     }
     
     private DB(){
+        /**
+         * Get the database credentials from the .env file.
+         */
+        Dotenv env = Dotenv.load();
+        String db_username = env.get("DB_USERNAME");
+        String db_password = env.get("DB_PASSWORD");
+        String db_name = env.get("DB_NAME");
+        String db_server = env.get("DB_SERVER");
+        
+        if(!"null".equals(db_username) && !"".equals(db_username) && db_username != null){
+            this.DB_USERNAME = db_username;
+        }else{
+            this.DB_USERNAME = "root";
+        }
+        if(!"null".equals(db_password) && !"".equals(db_password) && db_password != null){
+            this.DB_PASSWORD = db_password;
+        }else{
+            this.DB_PASSWORD = "";
+        }
+        if(!"null".equals(db_name) && !"".equals(db_name) && db_name != null){
+            this.DB_NAME = db_name;
+        }else{
+            this.DB_NAME = "gma_sellersystem";
+        }
+        if(!"null".equals(db_server) && !"".equals(db_server) && db_server != null){
+            this.DB_SERVER = db_server;
+        }else{
+            this.DB_SERVER = "localhost";
+        }
+        this.DB_LINK = "jdbc:mysql://"+ DB_SERVER +"/"+ DB_NAME;
+        
         connected = false;
         autoDisconnect = true;
     }
@@ -57,7 +91,7 @@ public class DB {
     
     public void connect(){
         try{
-            connection = DriverManager.getConnection(url, username, password);
+            connection = DriverManager.getConnection(DB_LINK, DB_USERNAME, DB_PASSWORD);
             connected = true;
 //            System.out.println("Connected");
         } catch (SQLException e) {
@@ -140,7 +174,6 @@ public class DB {
      * @return 
      */
     public String[][] get(String table, String[] valuesToGet, String whereCondition ){
-        
         String[][] resultArr = {};
         
         if(!connected){
@@ -334,5 +367,48 @@ public class DB {
         }
         
         return calculateID(table, HIGHEST_VALUE);
+    }
+    
+    protected void execute(String query){
+        if(!connected){
+            System.out.println("Database connection not established.");
+            return;
+        }
+        
+        try {
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.execute(query);
+            System.out.println("Successful operation");
+        } catch (SQLException ex) {
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
+        } finally{
+            if(autoDisconnect){
+                disconnect();
+            }
+        }
+    }
+    
+    protected ResultSet executeQuery(String query){
+        if(!connected){
+            System.out.println("Database connection not established.");
+            return null;
+        }
+        
+        ResultSet result = null;
+        
+        try {
+            PreparedStatement ps = connection.prepareStatement(query);
+            result = ps.executeQuery(query);
+            System.out.println("Successful operation");
+        } catch (SQLException ex) {
+            Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        } finally{
+            if(autoDisconnect){
+                disconnect();
+            }
+        }
+        
+        return result;
     }
 }

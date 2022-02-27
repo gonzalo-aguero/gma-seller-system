@@ -35,6 +35,8 @@ public class RegisterSaleForm extends javax.swing.JFrame{
         this.salesView = salesView;
         user = User.getInstance();
         
+        com.gmasoftware.sellersystem.theme.Icons.setDefaultFrameIcon(this);
+        
         initComponents();
         this.setLocationRelativeTo(null);
         

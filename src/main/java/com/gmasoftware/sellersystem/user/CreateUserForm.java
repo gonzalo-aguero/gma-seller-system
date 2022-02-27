@@ -19,6 +19,8 @@ public class CreateUserForm extends javax.swing.JFrame {
      */
     public CreateUserForm(UserView userView) {
         this.userView = userView;
+        com.gmasoftware.sellersystem.theme.Icons.setDefaultFrameIcon(this);
+        
         initComponents();
     }
 

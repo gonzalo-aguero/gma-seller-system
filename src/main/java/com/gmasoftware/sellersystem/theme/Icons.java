@@ -8,6 +8,7 @@ package com.gmasoftware.sellersystem.theme;
 import java.awt.Image;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 
 /**
  *
@@ -16,12 +17,17 @@ import javax.swing.JFrame;
 public class Icons {
     /**
      * Place the default frame icon in the JFrame passed as a parameter.
-     * @param frame JFrame
+     * If the passed parameter is null, it will return the icon.
+     * @param frame JFrame.
+     * @return Image.
      */
-    public static void setDefaultFrameIcon(JFrame frame){
+    public static Image setDefaultFrameIcon(JFrame frame){
         String path = "img/favicon.png";
         Image icon = new ImageIcon(path).getImage();
-        frame.setIconImage(icon);
+        if(frame != null){
+            frame.setIconImage(icon);
+        }
+        return icon;
     }
     
     /**
@@ -37,6 +43,26 @@ public class Icons {
             Image newImg = image.getScaledInstance(width, height, Image.SCALE_DEFAULT); // scale it the smooth way  
             imageIcon = new ImageIcon(newImg);
             button.setIcon(imageIcon);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+    
+    /**
+     * @param path Image path.
+     * @param label JLabel.
+     * @param width Width of the image.
+     * @param height Height of the image.
+     */
+    public static void setLabelIcon(String path, javax.swing.JLabel label, int width, int height){
+        try {
+            ImageIcon imageIcon = new ImageIcon(path);
+            Image image = imageIcon.getImage();
+            Image newImg = image.getScaledInstance(width, height, Image.SCALE_DEFAULT);
+            imageIcon = new ImageIcon(newImg);
+            label.setIcon(imageIcon);
+            label.setHorizontalAlignment(JLabel.CENTER);
+            label.setVerticalAlignment(JLabel.CENTER);
         } catch (Exception e) {
             System.out.println(e);
         }

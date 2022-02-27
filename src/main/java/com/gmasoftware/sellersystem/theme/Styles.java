@@ -46,4 +46,8 @@ public class Styles {
     public static void applyOptionsBar(javax.swing.JPanel ob){
         ob.setBackground(Color.decode(COLOR_1));
     }
+    
+    public static void applyButtonStyle(javax.swing.JButton btn){
+        btn.setSize(0, 0);
+    }
 }

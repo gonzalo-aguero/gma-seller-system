@@ -4,6 +4,9 @@
  */
 package com.gmasoftware.sellersystem;
 
+import com.gmasoftware.sellersystem.messages.Alert;
+import io.github.cdimascio.dotenv.Dotenv;
+
 /**
  * It's a sales and products stock manager.
  * @author GMA Software

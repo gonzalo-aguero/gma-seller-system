@@ -4,9 +4,11 @@
  */
 package com.gmasoftware.sellersystem;
 
+import com.gmasoftware.sellersystem.theme.Styles;
 import com.gmasoftware.sellersystem.user.User;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
@@ -31,23 +33,34 @@ public class MainWindow extends javax.swing.JFrame {
     private MainWindow() {
         initComponents();
         
-        setExtendedState(6);
-
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        
+        //This JFrame
+        this.setSize(screenSize.width, screenSize.height);
+        setExtendedState(MainWindow.MAXIMIZED_BOTH);
         com.gmasoftware.sellersystem.theme.Icons.setDefaultFrameIcon(this);
-        com.gmasoftware.sellersystem.theme.Icons.setButtonIcon(
-                "img/remove.png",
-                salesButon,
-                25, 25
-        );
         
         contentPanel.setLayout(new BoxLayout(contentPanel,BoxLayout.Y_AXIS));
-        title.setText("Hola, " + User.getInstance().getUsername() +"!");
         
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        title.setText("Hola, " + User.getInstance().getUsername() +"!");
+        title.setFont(new java.awt.Font("Ubuntu", 1, 28));
+        
         mainPanel.setPreferredSize(new Dimension(screenSize.width, mainPanel.getHeight()));
         mainMenu.setPreferredSize(new Dimension((screenSize.width / 4), mainMenu.getHeight()));
         
         permissionRestrictions();
+        
+        salesButon.setMnemonic(KeyEvent.VK_1);
+        stockButon.setMnemonic(KeyEvent.VK_2);
+        usersButon.setMnemonic(KeyEvent.VK_3);
+        
+        Styles.applyNormalButtonColors(salesButon);
+        Styles.applyNormalButtonColors(stockButon);
+        Styles.applyNormalButtonColors(usersButon);
+        Styles.applyNormalButtonFont(salesButon);
+        Styles.applyNormalButtonFont(stockButon);
+        Styles.applyNormalButtonFont(usersButon);
+        Styles.applyNormalButtonFont(closeSesionButton);
     }
     
     /**
@@ -88,7 +101,7 @@ public class MainWindow extends javax.swing.JFrame {
         setResizable(false);
         setSize(new java.awt.Dimension(20, 20));
 
-        title.setFont(new java.awt.Font("Ubuntu Light", 0, 32)); // NOI18N
+        title.setFont(new java.awt.Font("Ubuntu Light", 1, 28)); // NOI18N
         title.setText("BIENVENIDO");
 
         javax.swing.GroupLayout contentPanelLayout = new javax.swing.GroupLayout(contentPanel);
@@ -99,7 +112,7 @@ public class MainWindow extends javax.swing.JFrame {
         );
         contentPanelLayout.setVerticalGroup(
             contentPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 459, Short.MAX_VALUE)
+            .addGap(0, 458, Short.MAX_VALUE)
         );
 
         salesButon.setFont(new java.awt.Font("Ubuntu", 0, 24)); // NOI18N
@@ -178,8 +191,9 @@ public class MainWindow extends javax.swing.JFrame {
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(mainPanelLayout.createSequentialGroup()
+                .addContainerGap()
                 .addComponent(title)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(contentPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(mainMenu, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -221,7 +235,7 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_salesButonActionPerformed
 
     private void closeSesionButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeSesionButtonActionPerformed
-        User.deleteSesion();
+        User.destroyInstance();
     }//GEN-LAST:event_closeSesionButtonActionPerformed
     
     /**
@@ -267,10 +281,6 @@ public class MainWindow extends javax.swing.JFrame {
                     usersButon.setEnabled(false);
             }
         }
-        
-        com.gmasoftware.sellersystem.theme.Styles.applyNormalButtonColors(salesButon);
-        com.gmasoftware.sellersystem.theme.Styles.applyNormalButtonColors(stockButon);
-        com.gmasoftware.sellersystem.theme.Styles.applyNormalButtonColors(usersButon);
     }
     
     /**
