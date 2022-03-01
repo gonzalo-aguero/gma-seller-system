@@ -164,6 +164,11 @@ public class ProductBlock extends JPanel{
     private DefaultComboBoxModel productComboboxModel(){
         var stock = Stock.getInstance();
         var products = stock.getProducts();
+        if(products == null){
+            Alert.alert(null, "Para registrar una venta debes crear un producto.");
+            return null;
+        }
+        
         var productsCount = products.length;
         String[] model = new String[productsCount +1];
         model[0] = "None";

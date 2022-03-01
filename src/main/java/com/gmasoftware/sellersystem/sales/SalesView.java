@@ -7,7 +7,6 @@ package com.gmasoftware.sellersystem.sales;
 import com.gmasoftware.sellersystem.messages.Alert;
 import com.gmasoftware.sellersystem.messages.Confirm;
 import com.gmasoftware.sellersystem.user.User;
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;

@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  * @author GMA Software
  */
 public class Model {
-    private static final String[] queries = {
+    private static final String[] MySQLQueries = {
         "CREATE TABLE `users` ("
             +"`id` int(11) NOT NULL,"
             +"`username` varchar(50) COLLATE utf8_bin NOT NULL,"
@@ -59,6 +59,40 @@ public class Model {
             +"ADD PRIMARY KEY (`id`);"
     };
     
+    private static final String[] SQLiteQueries = {
+        "CREATE TABLE users ("
+            +"id INTEGER,"
+            +"username TEXT,"
+            +"password TEXT,"
+            +"permissionLevel INTEGER,"
+            +"PRIMARY KEY(id)"
+        +");",
+        
+        "INSERT INTO users (`id`, `username`, `password`, `permissionLevel`) VALUES"
+            +"(1, 'Root', 'molV_*Y890', 0);",
+        
+        "CREATE TABLE products ("
+            +"id INTEGER,"
+            +"name TEXT,"
+            +"price TEXT,"
+            +"description INTEGER,"
+            +"stock TEXT,"
+            +"salesCount TEXT,"
+            +"PRIMARY KEY(id)"
+        +");",
+
+        "CREATE TABLE sales ("
+            +"id INTEGER,"
+            +"totalAmount TEXT,"
+            +"totalProductCount TEXT,"
+            +"date INTEGER,"
+            +"productList TEXT,"
+            +"productUnits TEXT,"
+            +"user TEXT,"
+            +"PRIMARY KEY(id)"
+        +");",
+    };
+    
     protected static void checkIfTablesExist(){
         var db = DB.getInstance();
         if(!db.connected){
@@ -66,12 +100,17 @@ public class Model {
         }
         
         try {
-            PreparedStatement ps = db.connection.prepareStatement("SHOW TABLES;");
+            PreparedStatement ps;
+            if(DB.getInstance().DB_TYPE.equals("mysql")){
+                ps = db.connection.prepareStatement("SHOW TABLES;");
+            }else{
+                //The db type is sqlite
+                ps = db.connection.prepareStatement("SELECT * FROM sqlite_master WHERE type = \"table\";");
+            }
             ResultSet result = ps.executeQuery();
             
             int tablesCount = 0;
             while(result.next()){
-                var table = result.getString(1);
                 tablesCount++;
             }
             
@@ -95,8 +134,16 @@ public class Model {
         var db = DB.getInstance();
         db.connect();
         db.setAutoDisconnect(false);
-        for (String query : queries) {
-            db.execute(query);
+        if(DB.getInstance().DB_TYPE.equals("mysql")){
+            for (String query : MySQLQueries) {
+                System.out.println("query: "+query);
+                db.execute(query);
+            }
+        }else{
+            for (String query : SQLiteQueries) {
+                System.out.println("query: "+query);
+                db.execute(query);
+            }
         }
         db.disconnect();
     }

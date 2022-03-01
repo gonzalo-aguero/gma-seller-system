@@ -7,9 +7,6 @@ package com.gmasoftware.sellersystem;
 import com.gmasoftware.sellersystem.messages.Alert;
 import java.awt.event.KeyEvent;
 import com.gmasoftware.sellersystem.user.User;
-import java.awt.Image;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
 
 /**
  *
@@ -41,14 +38,8 @@ public class Login extends javax.swing.JFrame {
         
         contentPanel.setSize(windowsWidth, windowsHeight);
         
-        com.gmasoftware.sellersystem.theme.Styles.applyGoodButtonColos(loginButton);
-        com.gmasoftware.sellersystem.theme.Styles.applyNormalButtonFont(loginButton);
-        
-        com.gmasoftware.sellersystem.theme.Icons.setLabelIcon(
-                "img/login_background.jpg", 
-                backgroundLabel, 
-                -1, windowsHeight
-        );
+        com.gmasoftware.sellersystem.theme.Styles.applyGoodButtonColos(submitButton);
+        com.gmasoftware.sellersystem.theme.Styles.applyNormalButtonFont(submitButton);
     }
 
     /**
@@ -63,23 +54,19 @@ public class Login extends javax.swing.JFrame {
         contentPanel = new javax.swing.JPanel();
         usernameInput = new javax.swing.JTextField();
         passwordInput = new javax.swing.JPasswordField();
-        loginButton = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        backgroundLabel2 = new javax.swing.JLabel();
-        backgroundLabel = new javax.swing.JLabel();
+        submitButton = new javax.swing.JButton();
+        title = new javax.swing.JLabel();
+        usernameTitle = new javax.swing.JLabel();
+        passwordTitle = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Ingresar");
         setResizable(false);
 
-        contentPanel.setBackground(null);
         contentPanel.setPreferredSize(new java.awt.Dimension(300, 400));
         contentPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         usernameInput.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        usernameInput.setText("Root");
         usernameInput.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 usernameInputKeyPressed(evt);
@@ -88,7 +75,6 @@ public class Login extends javax.swing.JFrame {
         contentPanel.add(usernameInput, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 110, 230, 30));
 
         passwordInput.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        passwordInput.setText("123");
         passwordInput.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 passwordInputKeyPressed(evt);
@@ -96,55 +82,43 @@ public class Login extends javax.swing.JFrame {
         });
         contentPanel.add(passwordInput, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 200, 230, 30));
 
-        loginButton.setFont(new java.awt.Font("Ubuntu Light", 0, 16)); // NOI18N
-        loginButton.setText("INGRESAR");
-        loginButton.addMouseListener(new java.awt.event.MouseAdapter() {
+        submitButton.setFont(new java.awt.Font("Ubuntu Light", 0, 16)); // NOI18N
+        submitButton.setText("INGRESAR");
+        submitButton.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                loginButtonMouseClicked(evt);
+                submitButtonMouseClicked(evt);
             }
         });
-        loginButton.addActionListener(new java.awt.event.ActionListener() {
+        submitButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                loginButtonActionPerformed(evt);
+                submitButtonActionPerformed(evt);
             }
         });
-        loginButton.addKeyListener(new java.awt.event.KeyAdapter() {
+        submitButton.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
-                loginButtonKeyPressed(evt);
+                submitButtonKeyPressed(evt);
             }
         });
-        contentPanel.add(loginButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 270, 230, 40));
+        contentPanel.add(submitButton, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 270, 230, 40));
 
-        jLabel1.setFont(new java.awt.Font("Ubuntu", 1, 24)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Bienvenido");
-        contentPanel.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 30, 230, -1));
+        title.setFont(new java.awt.Font("Ubuntu", 1, 24)); // NOI18N
+        title.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        title.setText("Bienvenido");
+        contentPanel.add(title, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 30, 230, -1));
 
-        jLabel2.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel2.setText("Nombre de Usuario");
-        contentPanel.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 80, 230, -1));
+        usernameTitle.setBackground(new java.awt.Color(255, 255, 255));
+        usernameTitle.setText("Nombre de Usuario");
+        contentPanel.add(usernameTitle, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 80, 230, -1));
 
-        jLabel3.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel3.setText("Contraseña");
-        contentPanel.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 180, 230, -1));
-
-        backgroundLabel2.setBackground(new java.awt.Color(204, 204, 255));
-        contentPanel.add(backgroundLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 250, 320));
-
-        backgroundLabel.setPreferredSize(new java.awt.Dimension(300, 332));
-        contentPanel.add(backgroundLabel, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, -10, 300, 380));
+        passwordTitle.setBackground(new java.awt.Color(255, 255, 255));
+        passwordTitle.setText("Contraseña");
+        contentPanel.add(passwordTitle, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 180, 230, -1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(0, 0, 0)
-                .addComponent(contentPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0))
+            .addComponent(contentPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -157,9 +131,9 @@ public class Login extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void loginButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_loginButtonMouseClicked
+    private void submitButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_submitButtonMouseClicked
         loginButtonHandler();
-    }//GEN-LAST:event_loginButtonMouseClicked
+    }//GEN-LAST:event_submitButtonMouseClicked
 
     private void usernameInputKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_usernameInputKeyPressed
         if (evt.getKeyCode()== KeyEvent.VK_ENTER){
@@ -173,15 +147,15 @@ public class Login extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_passwordInputKeyPressed
 
-    private void loginButtonKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_loginButtonKeyPressed
+    private void submitButtonKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_submitButtonKeyPressed
         if (evt.getKeyCode()== KeyEvent.VK_ENTER){
             loginButtonHandler();
         }
-    }//GEN-LAST:event_loginButtonKeyPressed
+    }//GEN-LAST:event_submitButtonKeyPressed
 
-    private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginButtonActionPerformed
+    private void submitButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_submitButtonActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_loginButtonActionPerformed
+    }//GEN-LAST:event_submitButtonActionPerformed
 
     private void loginButtonHandler(){
         String typedUsername = usernameInput.getText();
@@ -265,14 +239,12 @@ public class Login extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel backgroundLabel;
-    private javax.swing.JLabel backgroundLabel2;
     private javax.swing.JPanel contentPanel;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JButton loginButton;
     private javax.swing.JPasswordField passwordInput;
+    private javax.swing.JLabel passwordTitle;
+    private javax.swing.JButton submitButton;
+    private javax.swing.JLabel title;
     private javax.swing.JTextField usernameInput;
+    private javax.swing.JLabel usernameTitle;
     // End of variables declaration//GEN-END:variables
 }
