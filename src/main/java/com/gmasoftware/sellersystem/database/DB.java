@@ -23,11 +23,12 @@ public class DB {
     private static DB DB_Instance;
     protected static final int numberOfTables = 3;
     
-    private final String DB_USERNAME;
-    private final String DB_PASSWORD;
-    private final String DB_NAME;
-    private final String DB_SERVER;
-    private final String DB_LINK;
+    protected final String DB_TYPE;
+    private String DB_USERNAME;
+    private String DB_PASSWORD;
+    private String DB_NAME;
+    private String DB_SERVER;
+    private String DB_LINK;
     
     protected Connection connection;
     protected boolean  connected;
@@ -50,32 +51,44 @@ public class DB {
          * Get the database credentials from the .env file.
          */
         Dotenv env = Dotenv.load();
+        String db_type = env.get("DB_TYPE");
         String db_username = env.get("DB_USERNAME");
         String db_password = env.get("DB_PASSWORD");
         String db_name = env.get("DB_NAME");
         String db_server = env.get("DB_SERVER");
         
-        if(!"null".equals(db_username) && !"".equals(db_username) && db_username != null){
-            this.DB_USERNAME = db_username;
+        if(!"null".equals(db_type) && !"".equals(db_type) && db_type != null){
+            DB_TYPE = db_type;
         }else{
-            this.DB_USERNAME = "root";
+            DB_TYPE = "sqlite";
         }
-        if(!"null".equals(db_password) && !"".equals(db_password) && db_password != null){
-            this.DB_PASSWORD = db_password;
-        }else{
-            this.DB_PASSWORD = "";
+        
+        if("mysql".equals(DB_TYPE)){
+            if(!"null".equals(db_username) && !"".equals(db_username) && db_username != null){
+                DB_USERNAME = db_username;
+            }else{
+                DB_USERNAME = "root";
+            }
+            if(!"null".equals(db_password) && !"".equals(db_password) && db_password != null){
+                DB_PASSWORD = db_password;
+            }else{
+                DB_PASSWORD = "";
+            }
+            if(!"null".equals(db_name) && !"".equals(db_name) && db_name != null){
+                DB_NAME = db_name;
+            }else{
+                DB_NAME = "gma_sellersystem";
+            }
+            if(!"null".equals(db_server) && !"".equals(db_server) && db_server != null){
+                DB_SERVER = db_server;
+            }else{
+                DB_SERVER = "localhost";
+            }
+            DB_LINK = "jdbc:mysql://"+ DB_SERVER +"/"+ DB_NAME; 
+            
+        }else if("sqlite".equals(DB_TYPE)){
+            DB_LINK = "jdbc:sqlite:database.db";
         }
-        if(!"null".equals(db_name) && !"".equals(db_name) && db_name != null){
-            this.DB_NAME = db_name;
-        }else{
-            this.DB_NAME = "gma_sellersystem";
-        }
-        if(!"null".equals(db_server) && !"".equals(db_server) && db_server != null){
-            this.DB_SERVER = db_server;
-        }else{
-            this.DB_SERVER = "localhost";
-        }
-        this.DB_LINK = "jdbc:mysql://"+ DB_SERVER +"/"+ DB_NAME;
         
         connected = false;
         autoDisconnect = true;
@@ -91,9 +104,16 @@ public class DB {
     
     public void connect(){
         try{
-            connection = DriverManager.getConnection(DB_LINK, DB_USERNAME, DB_PASSWORD);
-            connected = true;
-//            System.out.println("Connected");
+            if("mysql".equals(DB_TYPE)){
+                connection = DriverManager.getConnection(DB_LINK, DB_USERNAME, DB_PASSWORD);
+                connected = true;
+            }else if("sqlite".equals(DB_TYPE)){
+                connection = DriverManager.getConnection(DB_LINK);
+                connected = true;
+            }
+            if(connected){
+                System.out.println("Connected.");
+            }
         } catch (SQLException e) {
             Alert.alert(null,
                     "No se ha podido conectar a la base de datos."
@@ -112,7 +132,7 @@ public class DB {
             
             // To prevent a distracted person from forgetting to activate the automatic disconnection again O_o
             setAutoDisconnect(true);
-//            System.out.println("Connection closed");
+            System.out.println("Connection closed");
         } catch (SQLException ex) {
             Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -199,11 +219,19 @@ public class DB {
                 }
             }
 
-            String sql = "SELECT "+ valuesToGetStr +" FROM "+ table +" WHERE "+ whereCondition +";";
+            String sql_0 = "SELECT count(*) FROM "+ table +" WHERE "+ whereCondition +";";
+            String sql_1 = "SELECT "+ valuesToGetStr +" FROM "+ table +" WHERE "+ whereCondition +";";
             
             try {
-                PreparedStatement ps = connection.prepareStatement(sql, ResultSet.TYPE_SCROLL_SENSITIVE, 
-                        ResultSet.CONCUR_UPDATABLE);
+                // Get the number of rows.
+                PreparedStatement ps = connection.prepareStatement(sql_0);
+                result = ps.executeQuery();
+                result.next();
+                int rowCount = Integer.parseInt(result.getString(1));
+                
+//                PreparedStatement ps = connection.prepareStatement(sql_1, ResultSet.TYPE_SCROLL_SENSITIVE, 
+//                        ResultSet.CONCUR_UPDATABLE);
+                ps = connection.prepareStatement(sql_1);
                 
                 result = ps.executeQuery();
                 
@@ -211,14 +239,7 @@ public class DB {
                 if("*".equals(valuesToGet[0])){
                     valuesToGetCount = result.getMetaData().getColumnCount();
                 }
-                
-                // Get the number of rows.
-                var rowCount = 0;
-                while (result.next()) {
-                    rowCount++;
-                }  
-                result.beforeFirst();//restart the result cursor to index -1
-                
+
                 if(rowCount > 0){
                     var currentRow = 0;
                     resultArr = new String[rowCount][valuesToGetCount];
@@ -377,7 +398,7 @@ public class DB {
         
         try {
             PreparedStatement ps = connection.prepareStatement(query);
-            ps.execute(query);
+            ps.execute();
             System.out.println("Successful operation");
         } catch (SQLException ex) {
             Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
