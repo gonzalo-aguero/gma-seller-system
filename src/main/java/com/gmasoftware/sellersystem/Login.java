@@ -38,7 +38,7 @@ public class Login extends javax.swing.JFrame {
         
         contentPanel.setSize(windowsWidth, windowsHeight);
         
-        com.gmasoftware.sellersystem.theme.Styles.applyGoodButtonColos(submitButton);
+        com.gmasoftware.sellersystem.theme.Styles.applyGoodButtonColors(submitButton);
         com.gmasoftware.sellersystem.theme.Styles.applyNormalButtonFont(submitButton);
     }
 
@@ -179,6 +179,9 @@ public class Login extends javax.swing.JFrame {
             
             if(user.isAuthenticated()){
                 runHome();
+                usernameInput.setText("");
+                usernameInput.requestFocus();
+                passwordInput.setText("");
             }
         }catch(Error e){
             switch (e.getMessage()){

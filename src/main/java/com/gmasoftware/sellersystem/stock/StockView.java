@@ -7,6 +7,7 @@ import com.gmasoftware.sellersystem.MainWindow;
 import com.gmasoftware.sellersystem.database.DB;
 import com.gmasoftware.sellersystem.messages.Alert;
 import com.gmasoftware.sellersystem.messages.Confirm;
+import com.gmasoftware.sellersystem.theme.Styles;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -16,6 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -24,8 +26,6 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -61,16 +61,25 @@ public class StockView {
         tableModelFactory();
         content.add(stockTable());
         content.add(optionsMenu());
+        content.add(notes());
+        content.add(shortcutsText());
         
         return content;
     }
     
     private JLabel viewTitle(){
         title = new JLabel("PRODUCTOS");
-        title.setFont(new java.awt.Font("Ubuntu Light", 1, 20));
-        title.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        Styles.applyViewTitle(title);
         return title;
     }
+    
+    
+    
+    
+    
+    // ===========================================
+    // ================== TABLE ==================
+    // ===========================================
     
     private void tableModelFactory(){
         final String[][] stock = Stock.getInstance().getStockAsArray();
@@ -81,21 +90,11 @@ public class StockView {
             }
         };
         
-        tableModel.addTableModelListener(new TableModelListener() {
-            @Override
-            public void tableChanged(TableModelEvent evt) {
-                if(tableIsSaved){
-                    setTableIsSaved(false);
-                }
-//                if(!tableIsSaved){
-//                    System.out.println("No está guardado, se guarda.");
-//                    saveButtonHandler(false);
-//                }else{
-//                    System.out.println("Ya está guardado.");
-//                }
+        tableModel.addTableModelListener((var evt) -> {
+            if(tableIsSaved){
+                setTableIsSaved(false);
             }
         });
-
     }
     
     private JScrollPane stockTable(){
@@ -104,7 +103,7 @@ public class StockView {
         tableContainer = new JScrollPane(stockTable);
         tableContainer.setLocation(0,0);
         
-        //Save the table data with Ctrl + S.
+        //Keyboard shortcuts
         stockTable.addKeyListener(new KeyListener(){
             @Override
             public void keyTyped(KeyEvent e){}
@@ -127,6 +126,17 @@ public class StockView {
             public void keyReleased(KeyEvent e){}
         });
         
+        //Set the size of each column in the table.
+        stockTable.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
+        stockTable.getColumnModel().getColumn(0).setPreferredWidth(40);//id column
+        stockTable.getColumnModel().getColumn(1).setPreferredWidth(200);//name
+        stockTable.getColumnModel().getColumn(2).setPreferredWidth(70);//price
+        stockTable.getColumnModel().getColumn(3).setPreferredWidth(650);//description
+        stockTable.getColumnModel().getColumn(4).setPreferredWidth(55);//stock
+        stockTable.getColumnModel().getColumn(5).setPreferredWidth(55);//sales
+        
+        stockTable.getTableHeader().setReorderingAllowed(false);
+        
         return tableContainer;
     }
     
@@ -134,16 +144,26 @@ public class StockView {
         //Update table content.
         final String[][] stock = Stock.getInstance().getStockAsArray();
         tableModel.setDataVector(stock, tableHeader);
-
+        
         //Set focus to last row
         final var rowIndex = stockTable.getRowCount() -1;
         stockTable.changeSelection(rowIndex, 1, false, false);
         
         setTableIsSaved(true);
+        
+        //Set the size of each column in the table.
+        stockTable.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
+        stockTable.getColumnModel().getColumn(0).setPreferredWidth(40);//id column
+        stockTable.getColumnModel().getColumn(1).setPreferredWidth(200);//name
+        stockTable.getColumnModel().getColumn(2).setPreferredWidth(70);//price
+        stockTable.getColumnModel().getColumn(3).setPreferredWidth(650);//description
+        stockTable.getColumnModel().getColumn(4).setPreferredWidth(55);//stock
+        stockTable.getColumnModel().getColumn(5).setPreferredWidth(55);//sales
     }
     
     private void setTableIsSaved(boolean isSaved){
         final var MW = MainWindow.getInstance();
+                
         if(isSaved){
             //Once the changes have been saved, you can change the view.
             MW.buttonsAreEnabled(true);
@@ -155,6 +175,18 @@ public class StockView {
         }
     }
     
+    // ===============================================
+    // ================== END TABLE ==================
+    // ===============================================
+    
+    
+    
+    
+    
+    // =============================================
+    // ================== BUTTONS ==================
+    // =============================================
+    
     private JPanel optionsMenu(){
         
         // Buttons
@@ -164,7 +196,7 @@ public class StockView {
         var saveButton = new JButton("Guardar");
         var importButton = new JButton("Importar");
         
-        com.gmasoftware.sellersystem.theme.Styles.applyGoodButtonColos(addButton);
+        com.gmasoftware.sellersystem.theme.Styles.applyGoodButtonColors(addButton);
         com.gmasoftware.sellersystem.theme.Styles.applyNormalButtonFont(addButton);
         
         com.gmasoftware.sellersystem.theme.Styles.applyNeutralButtonColors(selectAllButton);
@@ -314,12 +346,12 @@ public class StockView {
             productIDs[i] = Integer.parseInt(idStr);//Parse to int.
         }
         
-        String title = "Se eliminarán los productos seleccionados.\n"
+        String confirmTitle = "Se eliminarán los productos seleccionados.\n"
                 + "¡Una vez hecho, no hay vuelta atrás!\n\n"
                 + "¿Desea continuar?";
         String confirmMsg = "Confirmar";
         
-        var answer = Confirm.deleteConfirm(title, confirmMsg);
+        var answer = Confirm.deleteConfirm(confirmTitle, confirmMsg);
 
         final Stock SI = Stock.getInstance();
         if(answer == 1){
@@ -335,7 +367,7 @@ public class StockView {
     private void importButtonHandler(){
         JFileChooser fc = new JFileChooser();
         fc.setAcceptAllFileFilterUsed(false);
-        FileFilter fileFilter = new FileNameExtensionFilter("Archivos CSV","csv");
+        FileFilter fileFilter = new FileNameExtensionFilter("Archivo de valores separados por comas (.csv)", "csv");
         fc.setFileFilter(fileFilter);
         fc.setFont(new java.awt.Font("Ubuntu Light", 0, 15));
         fc.setDragEnabled(true);
@@ -353,7 +385,7 @@ public class StockView {
      * Import products from file passed as parameter.
      * @param path Path to the file.
      */
-    private void importFromThisFile(String path){
+    private void importFromThisFile(String path)    {
         Path pathToFile = Paths.get(path);
         
         // create an instance of BufferedReader
@@ -400,4 +432,115 @@ public class StockView {
                     + "\nVerifica que el formato es correcto.");
         }
     }
+    
+    // =================================================
+    // ================== END BUTTONS ==================
+    // =================================================
+    
+    
+    
+    
+    
+    // ===========================================
+    // ================== NOTES ==================
+    // ===========================================
+    
+    /**
+     *  It returns a JPanel with text about this view.
+     */
+    private JPanel notes(){
+        JLabel[] labels = new JLabel[6];
+        labels[0] = new JLabel("Como importar productos a través de un archivo CSV");
+        labels[1] = new JLabel("Para importar productos deberá tener un archivo de valores separados por coma (.csv).");
+        labels[2] = new JLabel("Si usted tiene sus productos en un archivo de Microsoft Excel o Google Sheets, ambos programas le darán la opción");
+        labels[3] = new JLabel(" de \"Guardar como CSV\" o \"Descargar como CSV\" (puede que diga \"Valores separados por comas\" en lugar de CSV).");
+        labels[4] = new JLabel("El formato para los productos deberá ser de la siguiente forma:");
+        labels[5] = new JLabel("Nombre,Precio,Descripción,Stock disponible,Número de ventas");
+        
+        Box box = Box.createVerticalBox();
+        
+        for (JLabel label : labels) {
+            Styles.applyTextStyle(label);
+            label.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+            box.add(label);
+        }
+        
+        Styles.applyTitle(labels[0]);//Title
+        labels[5].setFont(new java.awt.Font(Styles.FONT_2, 1, 12));//label with the format to import
+        javax.swing.border.Border border = labels[5].getBorder();
+        javax.swing.border.Border margin = new javax.swing.border.EmptyBorder(12,10,10,10);
+        labels[5].setBorder(new javax.swing.border.CompoundBorder(border, margin));
+        
+        box.add(labels[0]);
+        box.add(labels[1]);
+        box.add(labels[2]);
+        box.add(labels[3]);
+        box.add(Box.createVerticalStrut(15));
+        box.add(labels[4]);
+        box.add(labels[5]);
+        
+        JPanel tc = new JPanel();//text container
+        tc.setLocation(0,0);
+        tc.setPreferredSize(new java.awt.Dimension(
+                MainWindow.getInstance().getContentPanelWidth(),
+                200
+        ));
+        
+        tc.add(box);
+        
+        return tc;
+    }
+    
+    /**
+     *  It returns a JPanel with text about the keyboard shortcuts.
+     */
+    private JPanel shortcutsText(){
+        JLabel[] labels = new JLabel[9];
+        labels[0] = new JLabel("Atajos del teclado");
+        labels[1] = new JLabel("Una vez seleccionada una fila cualquiera de la tabla:");
+        labels[2] = new JLabel("TAB para cambiar a la celda de la derecha.");
+        labels[3] = new JLabel("SHIFT + TAB para cambiar a la celda de la izquierda.");
+        labels[4] = new JLabel("ENTER para cambiar a la celda de abajo.");
+        labels[5] = new JLabel("SHIFT + ENTER para cambiar a la celda de arriba.");
+        labels[6] = new JLabel("CTRL + S para guardar los cambios.");
+        labels[7] = new JLabel("CTRL + N para crear un nuevo producto.");
+        labels[8] = new JLabel("CTRL + DELETE o CTRL + SUPR para eliminar los productos seleccionados.");
+        
+        Box box = Box.createVerticalBox();
+        
+        for (JLabel label : labels) {
+            Styles.applyTextStyle(label);
+            label.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+            box.add(label);
+        }
+        
+        Styles.applyTitle(labels[0]);//Title
+        
+        box.add(labels[0]);
+        box.add(labels[1]);
+        box.add(Box.createVerticalStrut(15));
+        box.add(labels[2]);
+        box.add(labels[3]);
+        box.add(Box.createVerticalStrut(15));
+        box.add(labels[4]);
+        box.add(labels[5]);
+        box.add(Box.createVerticalStrut(15));
+        box.add(labels[6]);
+        box.add(labels[7]);
+        box.add(labels[8]);
+        
+        JPanel tc = new JPanel();//text container
+        tc.setLocation(0,0);
+        tc.setPreferredSize(new java.awt.Dimension(
+                MainWindow.getInstance().getContentPanelWidth(),
+                300
+        ));
+        
+        tc.add(box);
+        
+        return tc;
+    }
+    // ===============================================
+    // ================== END NOTES ==================
+    // ===============================================
 }   

@@ -17,6 +17,10 @@ import javax.swing.JScrollPane;
  * @author GMA Software
  */
 public class MainWindow extends javax.swing.JFrame {
+    private final int contentPanelWidth;
+    public int getContentPanelWidth(){
+        return this.contentPanelWidth;
+    }
     
     /** Single global instance. **/
     private static MainWindow mainWindowInstance = null;
@@ -47,6 +51,9 @@ public class MainWindow extends javax.swing.JFrame {
         
         mainPanel.setPreferredSize(new Dimension(screenSize.width, mainPanel.getHeight()));
         mainMenu.setPreferredSize(new Dimension((screenSize.width / 4), mainMenu.getHeight()));
+        
+        contentPanelWidth = contentPanel.getWidth();
+        System.out.println("contentPanelWidth " + contentPanelWidth);
         
         permissionRestrictions();
         
@@ -268,18 +275,26 @@ public class MainWindow extends javax.swing.JFrame {
         var pl = User.getInstance().getPermissionLevel();
         if(pl > 1){
             switch (pl) {
-                case 2:
+                case 2: // stock manager
+                    salesButon.setEnabled(true);
+                    stockButon.setEnabled(true);
                     usersButon.setEnabled(false);
                     break;
-                case 3:
+                case 3: // sales manager
+                    salesButon.setEnabled(true);
                     stockButon.setEnabled(false);
                     usersButon.setEnabled(false);
                     break;
-                default:
+                default: // invalid permission level
                     stockButon.setEnabled(false);
                     salesButon.setEnabled(false);
                     usersButon.setEnabled(false);
             }
+        }else{
+            //Root and admin
+            salesButon.setEnabled(true);
+            stockButon.setEnabled(true);
+            usersButon.setEnabled(true);
         }
     }
     
@@ -290,9 +305,15 @@ public class MainWindow extends javax.swing.JFrame {
      * @param isEnabled 
      */
     public void buttonsAreEnabled(boolean isEnabled){
-        salesButon.setEnabled(isEnabled);
-        stockButon.setEnabled(isEnabled);
-        usersButon.setEnabled(isEnabled);
+        if(isEnabled){
+            // The buttons will be activated based on the user's permission level.
+            permissionRestrictions();
+        }else{
+            //All buttons will be disabled
+            salesButon.setEnabled(isEnabled);
+            stockButon.setEnabled(isEnabled);
+            usersButon.setEnabled(isEnabled);
+        }
     }
     
     /**
