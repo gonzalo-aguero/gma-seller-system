@@ -64,6 +64,12 @@ public class DB {
         }
         
         if("mysql".equals(DB_TYPE)){
+            try {
+                Class.forName("com.mysql.jdbc.Driver");
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
             if(!"null".equals(db_username) && !"".equals(db_username) && db_username != null){
                 DB_USERNAME = db_username;
             }else{
@@ -87,6 +93,12 @@ public class DB {
             DB_LINK = "jdbc:mysql://"+ DB_SERVER +"/"+ DB_NAME; 
             
         }else if("sqlite".equals(DB_TYPE)){
+            try {
+                Class.forName("org.sqlite.JDBC");
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(DB.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
             DB_LINK = "jdbc:sqlite:database.db";
         }
         
