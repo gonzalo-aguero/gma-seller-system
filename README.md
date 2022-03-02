@@ -9,3 +9,6 @@ For small businesses it will suffice to use SQLite. However, for medium or large
 The software will take care of creating the necessary tables when it starts up.
 
 To get the software just [Click here](https://drive.google.com/file/d/1HDuXQ9eRPLgPinDtdvwmV22EH09N4a4O/view?usp=sharing)
+
+<br><br><br>
+Finished in 96 hours.
