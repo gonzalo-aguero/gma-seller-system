@@ -4,8 +4,10 @@
  */
 package com.gmasoftware.sellersystem.user;
 
+import com.gmasoftware.sellersystem.MainWindow;
 import com.gmasoftware.sellersystem.messages.Alert;
 import com.gmasoftware.sellersystem.messages.Confirm;
+import com.gmasoftware.sellersystem.theme.Styles;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -59,14 +61,14 @@ public class UserView {
         tableModelFactory();
         content.add(tableFactory());
         content.add(optionsMenuFactory());
+        content.add(shortcutsText());
         
         return content;
     }
     
     private JLabel titleFactory(){
         title = new JLabel("USUARIOS");
-        title.setFont(new java.awt.Font("Ubuntu Light", 1, 20));
-        title.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        Styles.applyViewTitle(title);
         return title;
     }
     
@@ -92,6 +94,7 @@ public class UserView {
         tableContainer = new JScrollPane(usersTable);
         tableContainer.setLocation(0,0);
         
+        // Keyboard shortcuts
         usersTable.addKeyListener(new KeyListener(){
             @Override
             public void keyTyped(KeyEvent e){}
@@ -125,6 +128,8 @@ public class UserView {
             }
         });
         
+        usersTable.getTableHeader().setReorderingAllowed(false);
+        
         return tableContainer;
     }
     
@@ -154,7 +159,7 @@ public class UserView {
         var selectAllButton = new JButton("Seleccionar todos"); 
         var deleteButton = new JButton("Eliminar"); 
         
-        com.gmasoftware.sellersystem.theme.Styles.applyGoodButtonColos(addButton);
+        com.gmasoftware.sellersystem.theme.Styles.applyGoodButtonColors(addButton);
         com.gmasoftware.sellersystem.theme.Styles.applyNormalButtonFont(addButton);
         
         com.gmasoftware.sellersystem.theme.Styles.applyNeutralButtonColors(selectAllButton);
@@ -244,4 +249,65 @@ public class UserView {
      * ================== END BUTTONS ==================
      * =================================================
      */
+    
+    
+    
+    
+    
+    // ===========================================
+    // ================== NOTES ==================
+    // ===========================================
+    
+    /**
+     *  It returns a JPanel with text about the keyboard shortcuts.
+     */
+    private JPanel shortcutsText(){
+        JLabel[] labels = new JLabel[9];
+        labels[0] = new JLabel("Atajos del teclado");
+        labels[1] = new JLabel("Una vez seleccionada una fila cualquiera de la tabla:");
+        labels[2] = new JLabel("TAB para cambiar a la celda de la derecha.");
+        labels[3] = new JLabel("SHIFT + TAB para cambiar a la celda de la izquierda.");
+        labels[4] = new JLabel("ENTER para cambiar a la celda de abajo.");
+        labels[5] = new JLabel("SHIFT + ENTER para cambiar a la celda de arriba.");
+        labels[6] = new JLabel("DOBLE CLICK en cualquier fila para editar un usuario.");
+        labels[7] = new JLabel("CTRL + N para crear un nuevo usuario.");
+        labels[8] = new JLabel("CTRL + DELETE o CTRL + SUPR para eliminar los usuarios seleccionados.");
+        
+        javax.swing.Box box = javax.swing.Box.createVerticalBox();
+        
+        for (JLabel label : labels) {
+            Styles.applyTextStyle(label);
+            label.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+            box.add(label);
+        }
+        
+        Styles.applyTitle(labels[0]);//Title
+        
+        box.add(labels[0]);
+        box.add(labels[1]);
+        box.add(javax.swing.Box.createVerticalStrut(15));
+        box.add(labels[2]);
+        box.add(labels[3]);
+        box.add(javax.swing.Box.createVerticalStrut(15));
+        box.add(labels[4]);
+        box.add(labels[5]);
+        box.add(javax.swing.Box.createVerticalStrut(15));
+        box.add(labels[6]);
+        box.add(labels[7]);
+        box.add(labels[8]);
+        
+        JPanel tc = new JPanel();//text container
+        tc.setLocation(0,0);
+        tc.setPreferredSize(new java.awt.Dimension(
+                MainWindow.getInstance().getContentPanelWidth(),
+                300
+        ));
+        
+        tc.add(box);
+        
+        return tc;
+    }
+    // ===============================================
+    // ================== END NOTES ==================
+    // ===============================================
 }

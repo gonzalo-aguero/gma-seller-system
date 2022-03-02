@@ -5,12 +5,15 @@
 package com.gmasoftware.sellersystem.sales;
 
 import com.gmasoftware.sellersystem.database.DB;
+import com.gmasoftware.sellersystem.theme.Styles;
 import com.gmasoftware.sellersystem.user.User;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -44,6 +47,9 @@ public class RegisterSaleForm extends javax.swing.JFrame{
         addAProductBlock();
         
         actionBarFactory();
+        
+        Styles.applyGoodButtonColors(submitButton);
+        Styles.applyNormalButtonFont(submitButton);
     }
     
     /**
@@ -55,33 +61,18 @@ public class RegisterSaleForm extends javax.swing.JFrame{
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel3 = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList<>();
-        jLabel6 = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
+        formTitle = new javax.swing.JLabel();
         submitButton = new javax.swing.JButton();
         productListContainer = new javax.swing.JScrollPane();
         productBlocksContainer = new javax.swing.JPanel();
         actionBar = new javax.swing.JPanel();
 
-        jLabel3.setText("jLabel3");
-
-        jList1.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
-        jScrollPane1.setViewportView(jList1);
-
-        jLabel6.setText("jLabel6");
-
         setTitle("Register New Sale");
-        setMaximumSize(new java.awt.Dimension(615, 2147483647));
         setMinimumSize(new java.awt.Dimension(615, 0));
+        setResizable(false);
 
-        jLabel1.setFont(new java.awt.Font("Ubuntu Light", 1, 22)); // NOI18N
-        jLabel1.setText("REGISTER NEW SALE");
+        formTitle.setFont(new java.awt.Font("Ubuntu Light", 1, 22)); // NOI18N
+        formTitle.setText("REGISTER NEW SALE");
 
         submitButton.setText("ACCEPT");
         submitButton.addActionListener(new java.awt.event.ActionListener() {
@@ -120,27 +111,27 @@ public class RegisterSaleForm extends javax.swing.JFrame{
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(productListContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-            .addComponent(actionBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(submitButton, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addGap(191, 191, 191)
+                        .addComponent(formTitle)
+                        .addGap(0, 0, 0))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(215, 215, 215)
-                        .addComponent(jLabel1)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(submitButton, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
+            .addComponent(actionBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(formTitle, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
                 .addComponent(productListContainer, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(0, 0, 0)
                 .addComponent(actionBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(100, 100, 100)
+                .addGap(30, 30, 30)
                 .addComponent(submitButton, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -211,7 +202,6 @@ public class RegisterSaleForm extends javax.swing.JFrame{
             
             //It's the new array of product blocks with one less place.
             var newArraySize = (oldProductBlocksLength -1) > 0 ? (oldProductBlocksLength -1) : 0;
-            
             ProductBlock[] newArray1 = new ProductBlock[newArraySize];
             int indexCounter = 0;
             
@@ -240,26 +230,36 @@ public class RegisterSaleForm extends javax.swing.JFrame{
     }
     
     private void actionBarFactory(){
-        JButton addProductButton = new JButton();
-        addProductButton.setText("Añadir producto");
+        JButton addProductButton = new JButton("Añadir producto");
+        Styles.applyNormalButtonColors(addProductButton);
+        Styles.applyNormalButtonFont(addProductButton);
+        addProductButton.setSize(new Dimension(300, 200));
         addProductButton.addActionListener((ActionEvent arg0) -> {            
             addAProductBlock();
         });
         
-        JLabel totalTitle = new JLabel();
-        totalTitle.setFont(new java.awt.Font("Ubuntu Light", 1, 20));
-        totalTitle.setText("TOTAL");
+        JLabel totalTitle = new JLabel("TOTAL");
+        totalTitle.setFont(new java.awt.Font("Ubuntu Light", 1, 18));
         
-        total = new JLabel();
-        total.setFont(new java.awt.Font("Ubuntu", 1, 28));
-        total.setText("0");
+        var moneySign = new JLabel("$");
+        moneySign.setFont(new java.awt.Font("Ubuntu Light", 0, 20));
+        
+        total = new JLabel("0");
+        total.setFont(new java.awt.Font("Ubuntu", 0, 25));
         
         JPanel totalContainer = new JPanel();
+        totalContainer.setBackground(null);
         totalContainer.add(totalTitle);
+        totalContainer.add(moneySign);
         totalContainer.add(total);
         
-        actionBar.add(addProductButton);
-        actionBar.add(totalContainer);
+        var box = Box.createHorizontalBox();
+        box.add(totalContainer);
+        box.add(Box.createHorizontalStrut(150));
+        box.add(addProductButton);
+        
+        actionBar.add(box);
+        Styles.applyOptionsBar(actionBar);
     }
     
     protected float calculateTotal(){
@@ -355,11 +355,7 @@ public class RegisterSaleForm extends javax.swing.JFrame{
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel actionBar;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JList<String> jList1;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel formTitle;
     private javax.swing.JPanel productBlocksContainer;
     private javax.swing.JScrollPane productListContainer;
     private javax.swing.JButton submitButton;

@@ -5,6 +5,7 @@
 package com.gmasoftware.sellersystem.sales;
 
 import com.gmasoftware.sellersystem.database.DB;
+import com.gmasoftware.sellersystem.stock.Product;
 import com.gmasoftware.sellersystem.stock.Stock;
 
 /**
@@ -107,13 +108,21 @@ public class Sales {
                 var productID = productList[j];
                 var stock = Stock.getInstance().getProducts();
                 
-                for (int k = 0; k < stock.length; k++) {
-                    if(stock[k].getId() == productID){
-                        productName = stock[k].getName();
+                //Get the name of the current product by id.
+                for (Product product : stock) {
+                    if (product.getId() == productID) {
+                        productName = product.getName();
                     }
                 }
                 
-                products += "\n"+ productName + ": " + productUnits[j];
+                if(j >= (productCount - 1)){
+                    //if it's the last product
+                    products += "\n"+ productName + " (" + productUnits[j] + ")";
+                }else{
+                    //if it is not the last product
+                    products += "\n"+ productName + " (" + productUnits[j] + "),  ";
+                }
+                
             }
 
             salesArr[i][0] = String.valueOf(sales[i].getId());
