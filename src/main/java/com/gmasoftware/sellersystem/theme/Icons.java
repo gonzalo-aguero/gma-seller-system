@@ -15,6 +15,7 @@ import javax.swing.JLabel;
  * @author GMA Software
  */
 public class Icons {
+    
     /**
      * Place the default frame icon in the JFrame passed as a parameter.
      * If the passed parameter is null, it will return the icon.
@@ -22,7 +23,7 @@ public class Icons {
      * @return Image.
      */
     public static Image setDefaultFrameIcon(JFrame frame){
-        String path = "img/favicon.png";
+        String path = "img/icon-png.png";
         Image icon = new ImageIcon(path).getImage();
         if(frame != null){
             frame.setIconImage(icon);
